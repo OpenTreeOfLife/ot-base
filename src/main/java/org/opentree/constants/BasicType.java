@@ -15,4 +15,22 @@ public enum BasicType {
 	BasicType(Class<?> type) {
 		this.type = type;
 	}
+	
+	public Object convertToValue(Object value) {
+		if (this.type == Double.class) {
+			return Double.valueOf((String) value);
+
+		} else if (this.type == Integer.class) {
+			return Integer.valueOf((String) value);
+		
+		} else if (this.type == String.class) {
+			return String.valueOf(value);
+
+		} else if (this.type == Boolean.class) {
+			return Boolean.valueOf((String) value);
+
+		} else {
+			throw new IllegalStateException ("cannot convert to unknown type");
+		}
+	}
 }
