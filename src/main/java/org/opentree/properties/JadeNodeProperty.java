@@ -8,8 +8,8 @@ public enum JadeNodeProperty implements OTProperty {
 	 */
 	DISPLAY_PROPERTIES ("displayProperties", OTProperty[].class);
 
-	String propertyName;
-	Class<?> type;
+	private String propertyName;
+	private Class<?> type;
 	
 	JadeNodeProperty(String propertyName, Class<?> type) {
 		this.propertyName = propertyName;

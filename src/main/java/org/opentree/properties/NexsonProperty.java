@@ -13,8 +13,8 @@ public enum NexsonProperty implements OTProperty {
 	
 	;
 
-	String name;
-	Class<?> type;
+	private String name;
+	private Class<?> type;
 
 	NexsonProperty (String propertyName, Class<?> type) {
 		this.name = propertyName;

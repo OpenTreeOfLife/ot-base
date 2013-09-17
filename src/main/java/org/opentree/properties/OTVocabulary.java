@@ -67,8 +67,8 @@ public enum OTVocabulary implements OTProperty {
      */
     OT_YEAR ("ot:studyYear", int.class);
 	
-	public final String propertyName;
-	public final Class<?> type;
+	private final String propertyName;
+	private final Class<?> type;
     
 	OTVocabulary(String name, Class<?> type) {
     	this.propertyName = name;
