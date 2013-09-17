@@ -15,11 +15,9 @@ Installing the packages in this repo is done in the same way as installing the j
 
 1. git clone the ot-base repo locally
 2. cd into the ot-base directory and run:
-
 ```
 sh mvn_install.sh
 ```
-
 3. copy and paste the following code into the pom.xml file of any local maven project to access the ot-base packages
 
 ```
