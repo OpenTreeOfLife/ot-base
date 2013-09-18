@@ -22,15 +22,15 @@ import org.neo4j.kernel.Traversal;
  */
 public class DatabaseUtils {
 
-	public static TraversalDescription descendantTipTraversal(final RelationshipType relType) {
+	public static TraversalDescription descendantTipTraversal(final RelationshipType relType, final Direction direction) {
 
 		return Traversal
 			.description()
-			.relationships(relType, Direction.INCOMING)
+			.relationships(relType, direction)
 			.evaluator(new Evaluator() {
 				@Override
 				public Evaluation evaluate(Path inPath) {
-					if (inPath.endNode().hasRelationship(relType, Direction.INCOMING)) {
+					if (inPath.endNode().hasRelationship(relType, direction)) {
 						return Evaluation.EXCLUDE_AND_CONTINUE;
 					} else {
 						return Evaluation.INCLUDE_AND_PRUNE;
