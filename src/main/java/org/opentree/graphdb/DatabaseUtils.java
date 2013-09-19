@@ -1,9 +1,12 @@
 package org.opentree.graphdb;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermRangeQuery;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -133,8 +136,8 @@ public class DatabaseUtils {
 	 * @return
 	 * 		An iterable over the nodes resulting from the query
 	 */
-	public static Iterable<Node> getMultipleNodeIndexHits(Index<Node> index, String property, Object key) {
-		LinkedList<Node> result = new LinkedList<Node>();
+	public static List<Node> getMultipleNodeIndexHits(Index<Node> index, String property, Object key) {
+		List<Node> result = new ArrayList<Node>();
 		IndexHits<Node> hits = null;
 		try {
 			hits = index.query(property+":"+key);
@@ -162,8 +165,8 @@ public class DatabaseUtils {
 	 * @return
 	 * 		An iterable over the nodes resulting from the query
 	 */
-	public static Iterable<Node> getMultipleNodeIndexHits(Index<Node> index, Query query) {
-		LinkedList<Node> result = new LinkedList<Node>();
+	public static List<Node> getMultipleNodeIndexHits(Index<Node> index, Query query) {
+		List<Node> result = new ArrayList<Node>();
 		IndexHits<Node> hits = null;
 		try {
 			hits = index.query(query);
