@@ -81,6 +81,8 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
 	 */
     OT_PUBLICATION_REFERENCE ("ot:studyPublicationReference", String.class),
 
+    OT_SPECIFIED_ROOT ("ot:specifiedRoot", String.class),
+    
     /**
      * The phylografter study id. A property of source meta nodes.
      */
