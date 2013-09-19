@@ -18,6 +18,8 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
 	
 	OT_BRANCH_LENGTH_DESCRIPTION ("ot:branchLengthDescription", String.class),
 	
+	OT_BRANCH_LENGTH_TIME_UNITS ("ot:branchLengthTimeUnits", String.class),
+	
 	/**
 	 * The type of branch lengths for this tree. A property of tree root nodes.
 	 */
@@ -106,7 +108,7 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
      */
     OT_TAG ("ot:tag", String.class),
     
-    OT_TREEBASE_ID ("ot:treebaseTreeId", String.class),
+    OT_TREEBASE_TREE_ID ("ot:treebaseTreeId", String.class),
     
     OT_TREEBASE_OTU_ID ("ot:treebaseOTUIid", String.class),
     
