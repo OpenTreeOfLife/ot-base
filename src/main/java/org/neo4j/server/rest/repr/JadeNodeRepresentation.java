@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.opentree.IterableArray;
 import org.opentree.properties.JadeNodeProperty;
-import org.opentree.properties.OTProperty;
+import org.opentree.properties.OTPropertyPredicate;
 
 public class JadeNodeRepresentation extends MappingRepresentation {
 
@@ -52,14 +52,14 @@ public class JadeNodeRepresentation extends MappingRepresentation {
 					serializer.putString("name", "");
 				}
 				
-				OTProperty[] displayProperties = null;
+				OTPropertyPredicate[] displayProperties = null;
 				if (jadeNode.hasAssocObject(JadeNodeProperty.DISPLAY_PROPERTIES.propertyName())) {
-					displayProperties = (OTProperty[]) jadeNode.getObject(JadeNodeProperty.DISPLAY_PROPERTIES.propertyName());
+					displayProperties = (OTPropertyPredicate[]) jadeNode.getObject(JadeNodeProperty.DISPLAY_PROPERTIES.propertyName());
 				} 
 				
 				// add properties suitable for the JSON
 				if (displayProperties != null) {
-					for (OTProperty property : displayProperties) {
+					for (OTPropertyPredicate property : displayProperties) {
 						if (jadeNode.getObject(property.propertyName()) != null) {
 							
 							if (property.type() == int.class || property.type() == Integer.class) {

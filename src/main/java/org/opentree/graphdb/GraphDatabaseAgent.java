@@ -10,7 +10,7 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.opentree.properties.OTProperty;
+import org.opentree.properties.OTPropertyPredicate;
 
 /**
  * An abstraction of the Neo4J database that provides identical modes of access to both embedded and served databases,
@@ -132,7 +132,7 @@ public class GraphDatabaseAgent {
      * @param propname
      * @return
      */
-    public Object getGraphProperty(OTProperty gp) {
+    public Object getGraphProperty(OTPropertyPredicate gp) {
     	return getGraphProperty(gp.propertyName());
     }
     

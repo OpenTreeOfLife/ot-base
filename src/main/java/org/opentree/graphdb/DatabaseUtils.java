@@ -3,6 +3,7 @@ package org.opentree.graphdb;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.apache.lucene.search.Query;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -146,7 +147,34 @@ public class DatabaseUtils {
 		return result;
 	}
 	
-
+	/**
+	 * A convenience wrapper for querying node indexes that retrieves all results and then closes the IndexHits object.
+	 * Returns an empty Iterable<Node> if no nodes are found. This will be inefficient when the list of results
+	 * is large, as it must iterate over the results to store them in the iterator to be returned. For queries that
+	 * could produce many hits, use direct access to the node indexes themselves.
+	 * 
+	 * @param index
+	 * 		The index to query
+	 * @param property
+	 * 		The property to use for the query
+	 * @param key
+	 * 		The value to be searched for under the specified property
+	 * @return
+	 * 		An iterable over the nodes resulting from the query
+	 */
+	public static Iterable<Node> getMultipleNodeIndexHits(Index<Node> index, Query query) {
+		LinkedList<Node> result = new LinkedList<Node>();
+		IndexHits<Node> hits = null;
+		try {
+			hits = index.query(query);
+			for (Node hit : hits) {
+				result.add(hit);
+			}
+		} finally {
+			hits.close();
+		}
+		return result;
+	}
 	
 	/**
 	 * Switches all the properties of two nodes. If only one node has any property, it will be removed from that

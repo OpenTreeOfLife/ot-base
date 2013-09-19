@@ -1,6 +1,6 @@
 package org.opentree.properties;
 
-public interface OTProperty {
+public interface OTPropertyPredicate {
 
 	/**
 	 * The property name. Used to identify this property in indexes and on nodes.

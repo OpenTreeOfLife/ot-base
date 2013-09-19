@@ -7,7 +7,7 @@ package org.opentree.properties;
  * @author cody
  *
  */
-public enum NexsonProperty implements OTProperty {
+public enum NexsonProperty implements OTPropertyPredicate {
 
 	// TODO: fill this in and use these properties in things like NexsonReader and NexsonWriter
 	

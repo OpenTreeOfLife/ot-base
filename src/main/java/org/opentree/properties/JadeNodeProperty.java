@@ -1,12 +1,12 @@
 package org.opentree.properties;
 
-public enum JadeNodeProperty implements OTProperty {
+public enum JadeNodeProperty implements OTPropertyPredicate {
 
 	/**
 	 * A list of OTProperty objects specifying the properties to be displayed for this JadeNode (if they exist).
 	 * This list is used by JadeNodeRepresentation when transcribing a JadeNode tree structure to JSON.
 	 */
-	DISPLAY_PROPERTIES ("displayProperties", OTProperty[].class);
+	DISPLAY_PROPERTIES ("displayProperties", OTPropertyPredicate[].class);
 
 	private String propertyName;
 	private Class<?> type;
