@@ -135,6 +135,42 @@ public class GraphDatabaseAgent {
     public Object getGraphProperty(OTPropertyPredicate gp) {
     	return getGraphProperty(gp.propertyName());
     }
+
+    /**
+     * These assume that the graph properties will be stored at the 
+     * root node as properties. The root node should always be node 0
+     * @param propname
+     * @return
+     */
+    public void removeGraphProperty(OTPropertyPredicate gp) {
+    	removeGraphProperty(gp.propertyName());
+    }
+
+    /**
+     * These assume that the graph properties will be stored at the 
+     * root node as properties. The root node should always be node 0
+     * @param propname
+     * @return
+     */
+    public void removeGraphProperty(String propname) {
+    	if(embedded){
+    		Transaction tx = embeddedGraphDb.beginTx();
+    		try{
+    			embeddedGraphDb.getNodeById(0).removeProperty(propname);
+    			tx.success();
+    		}finally{
+    			tx.finish();
+    		}
+    	}else{
+    		Transaction tx = graphDbService.beginTx();
+    		try{
+    			graphDbService.getNodeById(0).removeProperty(propname);
+    			tx.success();
+    		}finally{
+    			tx.finish();
+    		}
+    	}
+    }
     
     /**
      * These assume that the graph properties will be stored at the actual graph db root node as properties. The root node of the
