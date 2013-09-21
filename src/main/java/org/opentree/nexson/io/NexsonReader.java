@@ -316,7 +316,7 @@ public class NexsonReader {
 		if (treeMetaList != null) {
 			associateMetadata(tree, extractMetadataMap(treeMetaList, verbose ? msgLogger : null));
 		}
-		tree.assocObject("id", treeID);
+		tree.assocObject("phylografter_id", treeID);
 		return tree;
 	}
 	
