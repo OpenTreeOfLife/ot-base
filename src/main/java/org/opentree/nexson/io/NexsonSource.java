@@ -23,6 +23,10 @@ public class NexsonSource {
 		return sourceId;
 	}
 	
+	public void setId(String sourceId) {
+		this.sourceId = sourceId;
+	}
+	
 	public Iterable<JadeTree> getTrees() {
 		return trees;
 	}

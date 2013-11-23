@@ -12,7 +12,7 @@ public enum OTPropertyChoices implements OTPropertyPredicate {
 
 	OT_BRANCH_LENGTH_MODE (OTVocabularyPredicate.OT_BRANCH_LENGTH_MODE, new OTVocabularyObject[] {
 			OTVocabularyObject.OT_BOOTSTRAP_VALUES,
-			OTVocabularyObject.OT_CHANGE_COUNT,
+			OTVocabularyObject.OT_CHANGES_COUNT,
 			OTVocabularyObject.OT_OTHER,
 			OTVocabularyObject.OT_POSTERIOR_SUPPORT,
 			OTVocabularyObject.OT_SUBSTITUTION_COUNT,

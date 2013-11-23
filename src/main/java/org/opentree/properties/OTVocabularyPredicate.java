@@ -59,7 +59,7 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
 	
 	OT_IS_INGROUP ("ot:isIngroup", Boolean.class), // TODO: switch over to this term for the otu labels currently using the OTUNodeProperty term
 	
-	OT_IS_OTU ("ot:isOTU", Boolean.class), // TODO: switch over to this term for the otu labels currently using the OTUNodeProperty term
+	OT_IS_LEAF ("ot:isLeaf", Boolean.class), // TODO: switch over to this term for the otu labels currently using the OTUNodeProperty term
 	
 	/**
 	 * The original label assigned to this node.
@@ -69,7 +69,7 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
 	/**
 	 * The ott id associated with the node. A property of tip nodes. Should not be set if the node has not been mapped.
 	 */
-	OT_OTT_ID ("ot:ottolid", Long.class), // TODO: will change to ot:ottId, change here when necessary
+	OT_OTT_ID ("ot:ottId", Long.class),
 	
 	/**
 	 * The ottol name associated with this taxon

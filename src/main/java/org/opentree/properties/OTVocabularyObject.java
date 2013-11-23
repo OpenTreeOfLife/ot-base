@@ -10,7 +10,7 @@ public enum OTVocabularyObject implements OTPropertyObject {
 	/**
 	 * Indicates that values are number of changes.
 	 */
-	OT_CHANGE_COUNT ("ot:changeCount"),
+	OT_CHANGES_COUNT ("ot:changesCount"),
 
 	/**
 	 * Indicates that values are defined but are not within the known set of value types. Refer to ot:*Description property for more information.

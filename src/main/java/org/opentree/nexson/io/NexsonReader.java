@@ -22,6 +22,7 @@ import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.opentree.MessageLogger;
+import org.opentree.properties.OTVocabularyPredicate;
 
 import java.io.Reader;
 import java.io.FileReader;
@@ -71,12 +72,14 @@ public class NexsonReader {
 		}
 	}
 
-	/* Read Nexson study from a file, given file name */
+	/**
+	 * Read Nexson study from a file, given file name
+	 * 
+	 */
 	public static NexsonSource readNexson(String filename, String sourceId, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
 
 		Reader r = null;
 		NexsonSource source = null;
-//		List<JadeTree> result;
 		try {
 			r = new BufferedReader(new FileReader(filename));
 			source = readNexson(r, sourceId, verbose, msgLogger);
@@ -85,8 +88,24 @@ public class NexsonReader {
 		}
 		return source;
 	}
+
+	/**
+	 *  Read Nexson study from a reader, infers study id from the nexson contents.
+	 *  
+	 */
+	public static NexsonSource readNexson(Reader r, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
+
+		NexsonSource source = null;
+		source = readNexson(r, null, verbose, msgLogger);
+		source.setId((String) source.getProperty(OTVocabularyPredicate.OT_STUDY_ID.propertyName()));
+		
+		return source;
+	}
 	
-	/* Read Nexson study from a Reader */
+	/**
+	 * Read Nexson study from a Reader, requires id to be supplied a priori
+	 * 
+	 */
 	// TODO: tree(s) may be deprecated. Need to check this. May result in no trees to return.
 	public static NexsonSource readNexson(Reader r, String sourceId, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
 
@@ -149,9 +168,17 @@ public class NexsonReader {
 		for (Object tree : treeList) {
 			JSONObject tree2 = (JSONObject)tree;
 			String treeID = (String)tree2.get("@id");
+
+			
+			/* deprecating this so that the id property in the nexson corresponds exactly with the value read in
+
 			if (treeID.startsWith("tree")) { // phylografter tree ids are #'s, but in the Nexson export, they'll have the word tree prepended
 				treeID = treeID.substring(4); // chop off 0-3 to chop off "tree"
 			}
+			
+			*/
+			
+			
 			msgLogger.messageStr("Processing tree", "@id", treeID);
 			
 			
@@ -220,7 +247,7 @@ public class NexsonReader {
 			String id = (String)j.get("@id");
 			nodeMap.put(id, jn);
 			arbitraryNode = jn;
-			jn.assocObject("nexsonid", id);
+			jn.assocObject("nexson_id", id);
 			// Set the root node
 			if (ingroup != null && id.compareTo(ingroup) == 0) {
 				msgLogger.indentMessage(1, "Setting ingroup root node.");
@@ -259,7 +286,7 @@ public class NexsonReader {
 							} else if (value instanceof Integer) {
 								value = new Long((((Integer)value).intValue()));
 							} else if (value == null) {
-								msgLogger.indentMessageStr(1, "Warning: dealing with null ot:ottolid here.", "nexsonid", id);
+								msgLogger.indentMessageStr(1, "Warning: dealing with null ot:ottolid here.", "nexson_id", id);
 							} else {
 								System.err.println("Error with: " + m);
 								throw new RuntimeException("Invalid ottolid value: " + value);
@@ -267,7 +294,7 @@ public class NexsonReader {
 //						} else if(propname.equals("ot:originalLabel")){ // commented out. do not ignore original labels!
 							// ignoring originalLabel, but not emitting the unknown property warning
 						} else {
-							msgLogger.indentMessageStrStr(1, "Warning: dealing with unknown property. Don't know what to do...", "property name", propname, "nexsonid", id);
+							msgLogger.indentMessageStrStr(1, "Warning: dealing with unknown property. Don't know what to do...", "property name", propname, "nexson_id", id);
 						}
 						jn.assocObject(propname, value);
 					}
@@ -316,7 +343,8 @@ public class NexsonReader {
 		if (treeMetaList != null) {
 			associateMetadata(tree, extractMetadataMap(treeMetaList, verbose ? msgLogger : null));
 		}
-		tree.assocObject("phylografter_id", treeID);
+//		tree.assocObject("phylografter_id", treeID);
+		tree.assocObject("nexson_id", treeID);
 		return tree;
 	}
 	

@@ -7,5 +7,6 @@ package org.opentree.graphdb;
 public interface NodeIndexDescription {
 
 	public String indexName();
+	public String[] parameters();
 	
 }
