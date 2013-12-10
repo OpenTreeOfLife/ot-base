@@ -22,11 +22,13 @@ import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.opentree.MessageLogger;
+import org.opentree.properties.OTVocabularyObject;
 import org.opentree.properties.OTVocabularyPredicate;
 
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -49,13 +51,16 @@ public class NexsonReader {
 		}
 		MessageLogger msgLogger = new MessageLogger("nexsonReader:");
 		int treeIndex = 0;
-		for (JadeTree tree : readNexson(filename, "", true, msgLogger).getTrees()) {
+//		for (JadeTree tree : readNexson(filename, "", true, msgLogger).getTrees()) {
+		for (NexsonTree tree : readNexson(filename, "", true, msgLogger).getTrees()) {
 			if (tree == null) {
 				msgLogger.messageInt("Null tree indicating unparseable NexSON", "index", treeIndex);
 			} else {
 				msgLogger.messageInt("tree", "index", treeIndex);
-				msgLogger.indentMessageStr(1, "annotation", "Curator", (String)tree.getObject("ot:curatorName"));
-				msgLogger.indentMessageStr(1, "annotation", "Reference", (String)tree.getObject("ot:studyPublicationReference"));
+//				msgLogger.indentMessageStr(1, "annotation", "Curator", (String)tree.getObject("ot:curatorName"));
+//				msgLogger.indentMessageStr(1, "annotation", "Reference", (String)tree.getObject("ot:studyPublicationReference"));
+				msgLogger.indentMessageStr(1, "annotation", "Curator", (String)tree.getProperty("ot:curatorName"));
+				msgLogger.indentMessageStr(1, "annotation", "Reference", (String)tree.getProperty("ot:studyPublicationReference"));
 				msgLogger.indentMessageStr(1, "representation", "newick", tree.getRoot().getNewick(false));
 				int i = 0;
 				for (JadeNode node : tree.iterateExternalNodes()) {
@@ -76,6 +81,7 @@ public class NexsonReader {
 	 * Read Nexson study from a file, given file name
 	 * 
 	 */
+	@Deprecated
 	public static NexsonSource readNexson(String filename, String sourceId, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
 
 		Reader r = null;
@@ -93,6 +99,7 @@ public class NexsonReader {
 	 *  Read Nexson study from a reader, infers study id from the nexson contents.
 	 *  
 	 */
+	@Deprecated
 	public static NexsonSource readNexson(Reader r, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
 
 		NexsonSource source = null;
@@ -109,7 +116,8 @@ public class NexsonReader {
 	// TODO: tree(s) may be deprecated. Need to check this. May result in no trees to return.
 	public static NexsonSource readNexson(Reader r, String sourceId, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
 
-		NexsonSource source = new NexsonSource(sourceId);
+		NexsonSource source = new NexsonSource();
+		source.setId(sourceId);
 
 		JSONObject all = (JSONObject) JSONValue.parse(r);
 
@@ -135,6 +143,8 @@ public class NexsonReader {
 		List<Object> studyMetaList = getMetaList(root);
 		//System.out.println("studyMetaList = " + studyMetaList);
 		
+		// get the annotations out of the meta list?
+		
 		// check if study is flagged as deprecated. if so, skip.
 		if (studyMetaList != null && checkDeprecated(studyMetaList)) {
 			msgLogger.message("Study tagged as deprecated. Ignore.");
@@ -146,7 +156,7 @@ public class NexsonReader {
 		JSONArray otuList = (JSONArray)otus.get("otu");
 		msgLogger.messageInt("OTUs", "number", otuList.size());
 
-		// Make an index by id of the OTUs. We'll need to be able to find them when we built the trees.
+		// Make an index by id of the OTUs. We'll need to be able to find them when we build the trees.
 		Map<String,JSONObject> otuMap = new HashMap<String,JSONObject>();
 		for (Object otu : otuList) {
 			JSONObject j = (JSONObject)otu;
@@ -157,6 +167,10 @@ public class NexsonReader {
 		// Get the trees. Each one has nodes and edges
 		JSONObject trees = (JSONObject)root.get("trees");
 		JSONArray treeList = (JSONArray)trees.get("tree");
+		
+		// get the annotations for this study
+//		JSONArray treeList = (JSONArray)trees.get("tree");
+		
 
 		// Copy STUDY-level metadata into the source
 		// See https://github.com/nexml/nexml/wiki/NeXML-Manual#wiki-Metadata_annotations_and_NeXML
@@ -200,7 +214,10 @@ public class NexsonReader {
 									  msgLogger));
 			}
 		}
-		source.addTrees(parsedTrees);
+		for (JadeTree tree : parsedTrees) {
+			source.addTree(new NexsonTree(tree));
+		}
+		
 		return source;
 	}
 
@@ -218,7 +235,7 @@ public class NexsonReader {
 		Map<String, JadeNode> nodeMap = new HashMap<String, JadeNode>();
 		JadeNode root = null;
 		
-		// check if an ingroup is defined. if so, discard outgroup(s).
+		// check if an ingroup is defined
 		String ingroup = null;
 		if (treeMetaList != null) {
 			for (Object meta : treeMetaList) {
@@ -277,7 +294,8 @@ public class NexsonReader {
 						JSONObject m = (JSONObject)meta;
 						String propname = (String)m.get("@property");
 						Object value = m.get("$");
-						if (propname.equals("ot:ottolid")) {
+//						if (propname.equals("ot:ottolid")) {
+						if (propname.equals(OTVocabularyPredicate.OT_OTT_ID.propertyName())) {
 							// Kludge! For important special case
 							if (value instanceof String) {
 								value = Long.parseLong((String)value);
@@ -286,7 +304,7 @@ public class NexsonReader {
 							} else if (value instanceof Integer) {
 								value = new Long((((Integer)value).intValue()));
 							} else if (value == null) {
-								msgLogger.indentMessageStr(1, "Warning: dealing with null ot:ottolid here.", "nexson_id", id);
+								msgLogger.indentMessageStr(1, "Warning: dealing with null ot:ottId here.", "nexson_id", id);
 							} else {
 								System.err.println("Error with: " + m);
 								throw new RuntimeException("Invalid ottolid value: " + value);
@@ -380,7 +398,7 @@ public class NexsonReader {
 		}
 	}
 	
-/*	private static void associateMetadata (JadeTree tree, List<Object> metaData, MessageLogger msgLogger) {
+	private static void associateMetadata (JadeTree tree, List<Object> metaData, MessageLogger msgLogger) {
 		for (Object meta : metaData) {
 			JSONObject j = (JSONObject)meta;
 			// {"@property": "ot:curatorName", "@xsi:type": "nex:LiteralMeta", "$": "Rick Ree"},
@@ -413,7 +431,7 @@ public class NexsonReader {
 				throw new RuntimeException("missing property name: " + j);
 			}
 		}
-	} */
+	}
 	
 	private static List<Object> getMetaList(JSONObject obj) {
 		//System.out.println("looking up meta for: " + obj);
@@ -432,47 +450,58 @@ public class NexsonReader {
 		}
 	}
 	
+	/**
+	 * somewhat clunky to have this separate from extractAnnotations below, since it traverses the same set of elements, but cleaner for now
+	 * @param metadata
+	 * @param msgLogger
+	 * @return
+	 */
 	private static Map<String, Object> extractMetadataMap(List<Object> metaData, MessageLogger msgLogger) {
 		Map<String, Object> metaMap = new HashMap<String, Object>();
 		for (Object meta : metaData) {
 			JSONObject j = (JSONObject)meta;
 			// {"@property": "ot:curatorName", "@xsi:type": "nex:LiteralMeta", "$": "Rick Ree"},
 			String propname = (String)j.get("@property");
+			
+			// annotations will be processed separately
 			if (propname != null) {
-				// String propkind = (String)j.get("@xsi:type");  = nex:LiteralMeta
-				// looking for either "$" or "@href" (former is more frequent)
-				if ((j.get("$")) != null) {
-					Object value = j.get("$");
-					if (value == null) {
-						throw new RuntimeException("missing value for " + propname);
-					}
-					
-//					tree.assocObject(propname, value);
-					metaMap.put(propname, value);
-
-					if (msgLogger != null) {
-						msgLogger.indentMessageStr(1, "property added", propname, value.toString());
-					}
-				} else if ((j.get("@href")) != null) {
-					Object value = j.get("@href");
-					if (value == null) {
-						throw new RuntimeException("missing value for " + propname);
-					}
-
-//					tree.assocObject(propname, value);
-					metaMap.put(propname, value);
-					
-					if (msgLogger != null) {
-						msgLogger.indentMessageStr(1, "property added", propname, value.toString());
+				if  (!propname.equals(OTVocabularyObject.OT_ANNOTATION.propertyName())) {
+				
+					// String propkind = (String)j.get("@xsi:type");  = nex:LiteralMeta
+					// looking for either "$" or "@href" (former is more frequent)
+					if ((j.get("$")) != null) {
+						Object value = j.get("$");
+						if (value == null) {
+							throw new RuntimeException("missing value for " + propname);
+						}
+						
+	//					tree.assocObject(propname, value);
+						metaMap.put(propname, value);
+	
+						if (msgLogger != null) {
+							msgLogger.indentMessageStr(1, "property added", propname, value.toString());
+						}
+					} else if ((j.get("@href")) != null) {
+						Object value = j.get("@href");
+						if (value == null) {
+							throw new RuntimeException("missing value for " + propname);
+						}
+	
+	//					tree.assocObject(propname, value);
+						metaMap.put(propname, value);
+						
+						if (msgLogger != null) {
+							msgLogger.indentMessageStr(1, "property added", propname, value.toString());
+						}
+					} else {
+						throw new RuntimeException("missing property value for name: " + j);
 					}
 				} else {
-					throw new RuntimeException("missing property value for name: " + j);
+					throw new RuntimeException("missing property name: " + j);
 				}
-			} else {
-				throw new RuntimeException("missing property name: " + j);
 			}
 		}
-
+		
 		return metaMap;
 	}
 }

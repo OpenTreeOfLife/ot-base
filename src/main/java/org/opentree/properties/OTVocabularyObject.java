@@ -3,6 +3,11 @@ package org.opentree.properties;
 public enum OTVocabularyObject implements OTPropertyObject {
 
 	/**
+	 * Indicates that the value is an annotation.
+	 */
+	OT_ANNOTATION ("ot:annotation"),
+	
+	/**
 	 * Indicates that values are bootstraps.
 	 */
 	OT_BOOTSTRAP_VALUES ("ot:bootstrapValues"),
