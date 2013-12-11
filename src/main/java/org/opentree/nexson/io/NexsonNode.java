@@ -13,7 +13,7 @@ public class NexsonNode extends NexsonElement {
 	private NexsonTree parentTree = null;
 	private NexsonOTU otu = null;
 	
-	public static final String JADE_NODE_NEXSON_OBJECT_KEY = "nexson_node";
+	public static final String NEXSON_NODE_JADE_OBJECT_KEY = "nexson_node";
 
 	/**
 	 * Create a NexsonNode object using the provided NexSON. Requires a NexsonTree element to be supplied, which will be used to attempt
@@ -47,11 +47,11 @@ public class NexsonNode extends NexsonElement {
 		return isTreeRoot;
 	}
 	
-	public JadeNode jadeNode() {
+	public JadeNode getJadeNode() {
 		return jadeNode;
 	}
 	
-	public NexsonOTU otu() {
+	public NexsonOTU getOTU() {
 		return otu;
 	}
 	
@@ -110,6 +110,6 @@ public class NexsonNode extends NexsonElement {
 	 * Logic called during construction
 	 */
 	private void initialize() {
-		jadeNode.assocObject(JADE_NODE_NEXSON_OBJECT_KEY, this);
+		jadeNode.assocObject(NEXSON_NODE_JADE_OBJECT_KEY, this);
 	}
 }

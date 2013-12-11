@@ -79,15 +79,29 @@ public abstract class NexsonElement {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Returns the property if it is set and is not null, or throws a NullPointerException if either of those conditions is false.
+	 * @param propertyName
+	 * @return
+	 */
 	public Object getNonNullProperty(String propertyName) {
 		Object value = getProperty(propertyName);
 		if (value == null) {
-			throw new NexsonParseException(this.getClass() + " " + getId() + " has a value of null for property '" +
+			throw new NullPointerException(this.getClass() + " " + getId() + " has a value of null for property '" +
 					propertyName + "', but this is not permitted.");
 		}
 		return value;
 	}
+	
+	/*
+	 * Returns false is the property is not set or is set but is null.
+	 * @param propertyName
+	 * @return
+	 *
+	public boolean propertyIsNotNull(String propertyName) {
+		return (hasProperty(propertyName) && getProperty(propertyName) != null);
+	} */
 
 	/**
 	 * Currently allows properties to be set with value==null. Not sure if this is what we want.

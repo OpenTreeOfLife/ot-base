@@ -20,6 +20,18 @@ public class NexsonOTU extends NexsonElement {
 	 */
 	public NexsonOTU() { }
 	
+	// ### getters
+	
+	public String getLabel() {
+		return label;
+	}
+	
+	// ### setters
+	
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
 	@Override
 	protected void parseNexson(JSONObject nexson) {
 
@@ -45,9 +57,13 @@ public class NexsonOTU extends NexsonElement {
 
 		// set the label
 		if (hasProperty(OTVocabularyPredicate.OT_OTT_TAXON_NAME.propertyName())) {
-			label = (String) getProperty(OTVocabularyPredicate.OT_OTT_ID.propertyName());
-		} else {
+			label = (String) getProperty(OTVocabularyPredicate.OT_OTT_TAXON_NAME.propertyName());
+
+		} else if (hasProperty(OTVocabularyPredicate.OT_ORIGINAL_LABEL.propertyName())) {
 			label = (String) getProperty(OTVocabularyPredicate.OT_ORIGINAL_LABEL.propertyName());
-		}		
+
+		} else {
+			label = (String) nexson.get("@label");
+		}
 	}
 }

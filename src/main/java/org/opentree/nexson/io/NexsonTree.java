@@ -147,9 +147,9 @@ public class NexsonTree extends NexsonElement {
 
 			// create a nexson node from the incoming JSON source and squirrel it away its associated JadeNode
 			NexsonNode nexsonNode = new NexsonNode((JSONObject)node, this);
-			jadeNodesByNexsonNodeId.put(nexsonNode.getId(), nexsonNode.jadeNode());
+			jadeNodesByNexsonNodeId.put(nexsonNode.getId(), nexsonNode.getJadeNode());
 			
-			arbitraryJadeNode = nexsonNode.jadeNode();
+			arbitraryJadeNode = nexsonNode.getJadeNode();
 			
 			if (nexsonNode.isTreeRoot()) {
 				specifiedRoot = nexsonNode;
@@ -174,9 +174,9 @@ public class NexsonTree extends NexsonElement {
 				throw new NexsonParseException("Edge with target property " + (String)j.get("@target") + " not corresponding to any known nodes");
 			}
 			
-			Double length = ((Number) j.get("@length")).doubleValue();
+			Number length = (Number) j.get("@length");
 			if (length != null) {
-				child.setBL(length);
+				child.setBL(length.doubleValue());
 			}
 			
 			parent.addChild(child);
@@ -186,7 +186,7 @@ public class NexsonTree extends NexsonElement {
 		// it matches the specifiedRoot. If the input file is malicious this might loop forever.
 		NexsonNode observedRoot = null;
 		for (JadeNode jn = arbitraryJadeNode; jn != null; jn = jn.getParent()) {
-			observedRoot = (NexsonNode) jn.getObject(NexsonNode.JADE_NODE_NEXSON_OBJECT_KEY);
+			observedRoot = (NexsonNode) jn.getObject(NexsonNode.NEXSON_NODE_JADE_OBJECT_KEY);
 		}
 
 		// Validation, assumes nexson edge polarity matches tree edge polarity (it should).
@@ -196,8 +196,8 @@ public class NexsonTree extends NexsonElement {
 		}
 		
 		// GraphImporter looks for root as node with no parents, so we set this here. This seems unnecessary...
-		observedRoot.jadeNode().setParent(null);
+		observedRoot.getJadeNode().setParent(null);
 		
-		tree = new JadeTree(observedRoot.jadeNode());		
+		tree = new JadeTree(observedRoot.getJadeNode());		
 	}
 }

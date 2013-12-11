@@ -217,10 +217,7 @@ public class NexsonReader {
 		for (JadeTree tree : parsedTrees) {
 
 			
-	// commenting for cleanliness. this will break the current code.		
-//			source.addTree(new NexsonTree(tree, ));
-
-		
+			source.addTree(new NexsonTree(tree));
 		
 		}
 		
