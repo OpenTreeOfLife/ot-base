@@ -158,6 +158,8 @@ public class NexsonSource extends NexsonElement {
 		
 		processMetadata(studyRootElement);
 		
+		setId((String) getNonNullProperty(OTVocabularyPredicate.OT_STUDY_ID.propertyName()));
+		
 		if (!hasProperty(OTVocabularyPredicate.OT_STUDY_ID.propertyName())) {
 			throw new NexsonParseException("Attempt to parse NexSON study without ot:studyId property. " +
 					"NexSON begins with: \n\n" + studyRootElement.toJSONString().substring(0, 256) + "...");

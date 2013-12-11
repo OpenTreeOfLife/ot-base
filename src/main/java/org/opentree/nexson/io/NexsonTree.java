@@ -176,7 +176,7 @@ public class NexsonTree extends NexsonElement {
 			
 			Number length = (Number) j.get("@length");
 			if (length != null) {
-				child.setBL(length.doubleValue());
+				((NexsonNode) child.getObject(NexsonNode.NEXSON_NODE_JADE_OBJECT_KEY)).setParentBranchLength(length.doubleValue());
 			}
 			
 			parent.addChild(child);

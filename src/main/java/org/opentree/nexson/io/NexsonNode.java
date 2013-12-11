@@ -9,6 +9,7 @@ public class NexsonNode extends NexsonElement {
 
 	private boolean isIngroupRoot = false;
 	private boolean isTreeRoot = false;
+	private Double branchLength = null;
 	private JadeNode jadeNode = new JadeNode();
 	private NexsonTree parentTree = null;
 	private NexsonOTU otu = null;
@@ -51,6 +52,10 @@ public class NexsonNode extends NexsonElement {
 		return jadeNode;
 	}
 	
+	public Double getParentBranchLength() {
+		return branchLength;
+	}
+	
 	public NexsonOTU getOTU() {
 		return otu;
 	}
@@ -73,6 +78,10 @@ public class NexsonNode extends NexsonElement {
 		this.parentTree = parentTree;
 	}
 
+	public void setParentBranchLength(Double branchLength) {
+		this.branchLength = branchLength;
+	}
+	
 	public void assignOTU(NexsonOTU otu) {
 		this.otu = otu;
 	}
