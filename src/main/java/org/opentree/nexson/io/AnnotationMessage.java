@@ -51,7 +51,16 @@ public class AnnotationMessage {
 	 */
 	public enum MessageCode {
 				
-		/*		
+		/*
+
+
+		TODO: this.
+		
+		Hopefully we will be able to require that data is a map. If so, it will be possible to predefine
+		the object type (even complex ones) for every element in an enum...
+		
+		Might not be necessary to have a map... getData could just return an generic Object, the structure of which is defined below...
+		
 		
 		REFERENCED_ID_NOT_FOUND	{key: string, value: string}	The NexSON attribute with the name key refers to an ID, but the ID is not in the NexSON. We have about 3000 cases of this with @otu in nodes or @source in edge objects not matching.
 		TIP_WITHOUT_OTU	{}	refersTo object is a node that is a tip on the tree, but is not mapped to any OTU object. This is an NexSON error, not failure to map to OTT. We have about 3000 cases
