@@ -46,19 +46,18 @@ public class NexsonTree extends NexsonElement {
 		parseNexson(nexson);
 	}
 	
-	/*
-	 * Create a NexsonTree object using the provided JadeTree.  This is a complex case that is going to need some thought...
+	/**
+	 * Create a NexsonTree object using the provided JadeTree.
 	 * @param nexson
-	 *
+	 * 
+	 * 
+	 * FOR NOW THIS IS JUST A KLUDGE SO NexsonReader will work... This is a case that may not be supported in the future.
+	 * 
+	 * 
+	 */
 	public NexsonTree(JadeTree jt)  {
-		super();
-		initializeTree();
 		tree = jt;
-		
-		// TODO: walk the tree and create NexsonNode objects, assigning them tree-unique ids. This could be
-		// more complicated if they have to be *study-unique* ids. Also probably need to set some tree properties
-		// based on the JadeTree? Or not...?
-	} */
+	}
 	
 	/**
 	 * Create an empty NexsonTree object.
