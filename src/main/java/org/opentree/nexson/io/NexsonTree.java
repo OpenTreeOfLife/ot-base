@@ -33,6 +33,7 @@ public class NexsonTree extends NexsonElement {
 	
 	private JadeTree tree = null;
 	private NexsonSource parentStudy = null;
+	private NexsonNode ingroupNode = null;
 	
 	/**
 	 * Create a NexsonTree object using the provided NexSON. Requires a study element to be specified containing any OTUs
@@ -74,6 +75,10 @@ public class NexsonTree extends NexsonElement {
 		return parentStudy;
 	}
 	
+	public NexsonNode getSpecifiedIngroupNode() {
+		return ingroupNode;
+	}
+	
 	/**
 	 * Return the root node for this tree. If this NexsonTree is empty, throw a NoSuchElementException.
 	 * @return
@@ -104,6 +109,24 @@ public class NexsonTree extends NexsonElement {
 		this.parentStudy = study;
 	}
 	
+	/**
+	 * Designate the provided node as the ingroup of the tree. This node must be a child of the root node (or the root node itself) of this
+	 * tree or an IllegalArgumentException will be thrown.
+	 * 
+	 * @param ingroupNode
+	 */
+	public void specifyIngroup(NexsonNode ingroupNode) {
+		JadeNode observedRoot = ingroupNode.getJadeNode();
+		while (observedRoot.getParent() != null) {
+			observedRoot = observedRoot.getParent();
+		}
+		if (observedRoot.equals(getRoot())) {
+			this.ingroupNode = ingroupNode;
+		} else {
+			throw new IllegalArgumentException("Attempt to specify an ingroup node in a tree that does not contain the designated node.");
+		}
+	}
+	
 	@Override
 	protected void parseNexson(JSONObject nexson) {
 		
@@ -113,22 +136,6 @@ public class NexsonTree extends NexsonElement {
 			{"@property":"ot:inGroupClade","$":"node208482","xsi:type":"nex:LiteralMeta"}
 		] */
 		processMetadata(nexson);
-	
-//		private static JadeTree importTree(Map<String,JSONObject> otuMap,
-//				   JSONArray nodeList,
-//				   JSONArray edgeList,
-//				   List<Object> studyMetaList,
-//				   List<Object> treeMetaList,
-//				   String treeID,
-//				   Boolean verbose,
-//				   MessageLogger msgLogger) {
-		
-//		if (treeMetaList != null) {
-//		for (Object meta : treeMetaList) {
-//			JSONObject j = (JSONObject)meta;
-//			if (((String)j.get("@property")).compareTo("ot:inGroupClade") == 0) {
-//		if ((j.get("$")) != null) {
-//		ingroup = (String)j.get("$");
 		
 		// arbitraryNode is used a starting point for finding the root later on (if not specified), see below
 		JadeNode arbitraryJadeNode = null;
