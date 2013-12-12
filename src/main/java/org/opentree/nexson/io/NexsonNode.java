@@ -109,8 +109,13 @@ public class NexsonNode extends NexsonElement {
 
 			// Some nodes have associated OTUs, others may not
 			String otuId = (String)nexson.get("@otu");
-			if (otuId != null) {
+			if (otuId != null) {				
 				assignOTU(parentTree.getParentStudy().getOTUById(otuId)); // will assign null if the parent study has no OTUs
+
+			} else { // fail case
+				if (hasProperty(OTVocabularyPredicate.OT_IS_LEAF.propertyName())) {
+					throw new NexsonParseException("The node " + getId() + " is identified as a leaf but has not been assigned an OTU.");
+				}
 			}
 		}
 	}
