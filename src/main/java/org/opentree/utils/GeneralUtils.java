@@ -1,4 +1,4 @@
-package org.opentree;
+package org.opentree.utils;
 
 import java.util.*;
 
