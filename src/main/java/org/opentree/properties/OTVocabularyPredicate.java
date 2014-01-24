@@ -74,7 +74,7 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
 	OT_DATA_DEPOSIT("ot:dataDeposit", String.class),
 
 	/**
-	 * The ottolid of root of clade specified as focal in the study
+	 * Study property. An ott id identifying the broadest taxon to which this study applies.
 	 */
 	OT_FOCAL_CLADE ("ot:focalClade", Long.class),
 	
