@@ -229,6 +229,11 @@ public abstract class NexsonElement {
 			JSONObject j = (JSONObject)meta;
 			String propertyName = (String)j.get("@property");
 			
+			// in case this is using nonstandard nexson (legacy?) 
+			if (propertyName == null) {
+				propertyName = (String)j.get("@rel");
+			}
+			
 			if (propertyName == null) {
 				throw new NexsonParseException("missing property name: " + j);
 
