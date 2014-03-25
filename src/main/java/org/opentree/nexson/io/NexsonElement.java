@@ -228,7 +228,9 @@ public abstract class NexsonElement {
 		for (Object meta : metadata) {
 			JSONObject j = (JSONObject)meta;
 			String propertyName = (String)j.get("@property");
-			
+			if (propertyName == null) {
+				propertyName = (String)j.get("@rel");
+			}
 			if (propertyName == null) {
 				throw new NexsonParseException("missing property name: " + j);
 
