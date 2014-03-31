@@ -82,18 +82,18 @@ public enum OTVocabularyPredicate implements OTPropertyPredicate {
 	/**
 	 * Study property. The ott id identifying the broadest taxon to which this study applies.
 	 */
-	OTVocabularyPredicate.OT_FOCAL_CLADE_OTT_TAXON_ID ("ot:focalCladeOTTId", String.class),
+	OT_FOCAL_CLADE_OTT_TAXON_ID ("ot:focalCladeOTTId", String.class),
 	
 	/**
 	 * Study property. The OTT taxon name for the clade that this study is about. Deprecated in favor of ot:focalCladeTaxonName (more general, not necessarily an OTT-defined name).
 	 */
 	@Deprecated
-	OTVocabularyPredicate.OT_FOCAL_CLADE_OTT_TAXON_NAME ("ot:focalCladeOTTTaxonName", String.class),
+	OT_FOCAL_CLADE_OTT_TAXON_NAME ("ot:focalCladeOTTTaxonName", String.class),
 	
 	/**
 	 * Study property. The name of the focal clade that this study is about. May not be an ott-recognized name!
 	 */
-	OTVocabularyPredicate.OT_FOCAL_CLADE_TAXON_NAME ("ot:focalCladeTaxonName", String.class),
+	OT_FOCAL_CLADE_TAXON_NAME ("ot:focalCladeTaxonName", String.class),
 	
 	/**
 	 * Tree property. Describes the way the tree was inferred.
