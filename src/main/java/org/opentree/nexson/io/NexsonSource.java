@@ -156,7 +156,7 @@ public class NexsonSource extends NexsonElement {
 		if (studyRootElement == null) {
 			studyRootElement = (JSONObject)nexson.get("nexml");	
 		} else {
-			studyRootElement = studyRootElement.get("nexml");	
+			studyRootElement = (JSONObject)studyRootElement.get("nexml");	
 		}
 		
 		// ===== study metadata
