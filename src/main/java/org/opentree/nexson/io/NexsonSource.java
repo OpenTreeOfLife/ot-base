@@ -152,7 +152,12 @@ public class NexsonSource extends NexsonElement {
 	protected void parseNexson(JSONObject nexson) {
 		
 		// The XML root element
-		JSONObject studyRootElement = (JSONObject)nexson.get("nexml");	
+		JSONObject studyRootElement = (JSONObject)nexson.get("data");
+		if (studyRootElement == null) {
+			studyRootElement = (JSONObject)nexson.get("nexml");	
+		} else {
+			studyRootElement = (JSONObject)studyRootElement.get("nexml");	
+		}
 		
 		// ===== study metadata
 		
