@@ -1,9 +1,11 @@
 package org.neo4j.server.rest.repr;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GeneralizedMappingRepresentation extends MappingRepresentation {
 
@@ -36,7 +38,7 @@ public class GeneralizedMappingRepresentation extends MappingRepresentation {
                     if (value instanceof Map) {
                         serializer.putMapping(key, (MappingRepresentation) getMapRepresentation((Map<String, Object>) value));
 
-                    } else if (value instanceof List || value instanceof Iterable || value instanceof Iterator) {
+                    } else if (value instanceof List || value instanceof Iterable || value instanceof Iterator || value instanceof Set) {
                         serializer.putList(key, (ListRepresentation) OTRepresentationConverter.convert(value));
 
                     } else if (value instanceof Boolean) {
