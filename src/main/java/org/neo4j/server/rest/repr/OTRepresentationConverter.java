@@ -41,7 +41,10 @@ public class OTRepresentationConverter {
         } else if (data instanceof Iterator) {
         	Iterator iterator = (Iterator) data;
             return getIteratorRepresentation(iterator);
-        
+
+        } else if (data.getClass().isArray()) {
+        	return getIteratorRepresentation(new IterableArray((Object[]) data).iterator());
+            
         } else if (data instanceof Map) {
             return getMapRepresentation( (Map) data );
             
@@ -164,9 +167,6 @@ public class OTRepresentationConverter {
 
         } else if (data instanceof Integer) {
             return ValueRepresentation.number(((Integer) data).intValue());
-        
-        } else if (data.getClass().isArray()) {
-        	return getIteratorRepresentation(new IterableArray((Object[]) data).iterator());
 
         } else {
         	return ValueRepresentation.string(data.toString());
