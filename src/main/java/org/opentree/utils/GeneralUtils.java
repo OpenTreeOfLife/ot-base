@@ -33,8 +33,16 @@ public class GeneralUtils {
     	return arr;
     }
 
+    public static long[] convertToLongArray(Set<Long> list) {
+    	return convertToLongArray(list, list.size());
+    }
+
     public static long[] convertToLongArray(List<Long> list) {
-    	long[] arr = new long[list.size()];
+    	return convertToLongArray(list, list.size());
+    }
+    
+    private static long[] convertToLongArray(Iterable<Long> list, int size) {
+    	long[] arr = new long[size];
     	int i = 0;
     	for (long l : list) {
     		arr[i] = l;
