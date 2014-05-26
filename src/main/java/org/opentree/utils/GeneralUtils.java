@@ -23,28 +23,36 @@ public class GeneralUtils {
 		return sum;
 	}
     
-    public static String[] convertToStringArray(List<String> list) {
-    	String[] arr = new String[list.size()];
+	public static Object convertToStringArray(Set<String> strings) {
+		return convertToStringArray(strings, strings.size());
+	}
+
+	public static Object convertToStringArray(List<String> strings) {
+		return convertToStringArray(strings, strings.size());
+	}
+	
+    private static String[] convertToStringArray(Iterable<String> strings, int size) {
+    	String[] arr = new String[size];
     	int i = 0;
-    	for (String s : list) {
+    	for (String s : strings) {
     		arr[i] = s;
     		i++;
     	}
     	return arr;
     }
 
-    public static long[] convertToLongArray(Set<Long> list) {
-    	return convertToLongArray(list, list.size());
+    public static long[] convertToLongArray(Set<Long> longs) {
+    	return convertToLongArray(longs, longs.size());
     }
 
-    public static long[] convertToLongArray(List<Long> list) {
-    	return convertToLongArray(list, list.size());
+    public static long[] convertToLongArray(List<Long> longs) {
+    	return convertToLongArray(longs, longs.size());
     }
     
-    private static long[] convertToLongArray(Iterable<Long> list, int size) {
+    private static long[] convertToLongArray(Iterable<Long> longs, int size) {
     	long[] arr = new long[size];
     	int i = 0;
-    	for (long l : list) {
+    	for (long l : longs) {
     		arr[i] = l;
     		i++;
     	}

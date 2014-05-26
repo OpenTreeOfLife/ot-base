@@ -32,7 +32,7 @@ public class GeneralizedMappingRepresentation extends MappingRepresentation {
                     
                     // TODO: extend the neo4j MappingSerializer (make a class called GeneralizedMappingSerializer) so it can use things other than strings for map keys
 
-                    String key = pair.getKey();
+                    String key = String.valueOf(pair.getKey());
                     Object value = pair.getValue();
                     
                     if (value instanceof Map) {
@@ -50,6 +50,9 @@ public class GeneralizedMappingRepresentation extends MappingRepresentation {
                     } else if (value instanceof String) {
                     	serializer.putString(key, (String) value);
 
+                    } else if (value == null) {
+                    	serializer.putString(key, "null");
+                    	
                     } else if (value.getClass().isArray()) {
                     	serializer.putList(key, (ListRepresentation) OTRepresentationConverter.convert(Arrays.asList(value)));
 
