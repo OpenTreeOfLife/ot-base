@@ -152,6 +152,9 @@ public class OTRepresentationConverter {
     {
         if (data == null) {
             return ValueRepresentation.string("null");        
+
+        } else if (data instanceof Representation) {
+        	return (Representation) data;
         
         } else if (data instanceof JadeTree) {
         	return JadeNodeRepresentation.getJadeNodeRepresentation(((JadeTree)data).getRoot());
