@@ -1,5 +1,8 @@
 package org.neo4j.server.rest.repr;
 
+import jade.tree.JadeNode;
+import jade.tree.JadeTree;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -41,6 +44,9 @@ public class GeneralizedMappingRepresentation extends MappingRepresentation {
                     } else if (value instanceof List || value instanceof Iterable || value instanceof Iterator || value instanceof Set) {
                         serializer.putList(key, (ListRepresentation) OTRepresentationConverter.convert(value));
 
+                    } else if (value.getClass().isArray()) {
+                    	serializer.putList(key, (ListRepresentation) OTRepresentationConverter.convert(Arrays.asList(value)));
+
                     } else if (value instanceof Boolean) {
                         serializer.putBoolean(key, (Boolean) value);
 
@@ -50,8 +56,11 @@ public class GeneralizedMappingRepresentation extends MappingRepresentation {
                     } else if (value instanceof String) {
                     	serializer.putString(key, (String) value);
 
-                    } else if (value.getClass().isArray()) {
-                    	serializer.putList(key, (ListRepresentation) OTRepresentationConverter.convert(Arrays.asList(value)));
+                    } else if (value instanceof JadeTree) {
+                    	serializer.putMapping(key, JadeNodeRepresentation.getJadeNodeRepresentation(((JadeTree) value).getRoot()));
+
+                    } else if (value instanceof JadeNode) {
+                    	serializer.putMapping(key, JadeNodeRepresentation.getJadeNodeRepresentation((JadeNode) value));
 
                     } else {
                     	serializer.putString(key, value.toString());
