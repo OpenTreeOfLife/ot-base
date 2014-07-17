@@ -19,11 +19,14 @@ import org.opentree.IterableArray;
 public class OTRepresentationConverter {
 
 	/**
-	 * Return a serialization of the passed in data, which is created by first converting `data` to a Representation object (which can then be serialized).
-	 * An attempts is made to determine the best approach to serializing `data` by examining the type of `data` and then calling a specialized converter method
-	 * intended to deal with that type of data. This works for primitives, simple container types that implement Iterable, and objects with explicit conversion
-	 * methods defined, but will fail on complex datatypes (e.g. classes with instance variables) that do not have explicitly defined conversion methods. New
-	 * conversion methods can be defined easily; see conversion methods for TNRSResults and ContextResult for examples.
+	 * Return a serialization of the passed in data, which is created by first converting `data` to a 
+	 * Representation object (which can then be serialized). An attempts is made to determine the best 
+	 * approach to serializing `data` by examining the type of `data` and then calling a specialized 
+	 * converter method intended to deal with that type of data. This works for primitives, simple 
+	 * container types that implement Iterable, and objects with explicit conversion methods defined, 
+	 * but will fail on complex datatypes (e.g. classes with instance variables) that do not have 
+	 * explicitly defined conversion methods. New conversion methods can be defined easily; see 
+	 * conversion methods for TNRSResults and ContextResult for examples.
 	 * 
 	 * @param data
 	 * @return serialized
@@ -128,9 +131,10 @@ public class OTRepresentationConverter {
     }
 
     /**
-     * Infer the type of the objects contained by the Iterable `representationIter`, or if `representationIter` has no elements in its iterator,
-     * then return the type of `representationIter` itself. Used by other converter methods to sniff the datatypes of elements in containers so that the appropriate
-     * converter methods can be called.
+     * Infer the type of the objects contained by the Iterable `representationIter`, or if `representationIter` 
+     * has no elements in its iterator, then return the type of `representationIter` itself. Used by other 
+     * converter methods to sniff the datatypes of elements in containers so that the appropriate converter 
+     * methods can be called.
      * @param representationIter
      * @return type of elements in 
      */
@@ -143,8 +147,9 @@ public class OTRepresentationConverter {
     }
 
     /**
-     * Return a Representation object that represents `data`. Representation objects are required by the RepresentationConverter serialization methods, so all objects to
-     * be serialized (including primitives) must be converted to a Representation; this method provides that functionality.
+     * Return a Representation object that represents `data`. Representation objects are required by the 
+     * RepresentationConverter serialization methods, so all objects to be serialized (including primitives) 
+     * must be converted to a Representation; this method provides that functionality.
      * @param data
      * @return Representation object for data
      */
@@ -152,6 +157,9 @@ public class OTRepresentationConverter {
     {
         if (data == null) {
             return ValueRepresentation.string("null");        
+
+        } else if (data instanceof Representation) {
+        	return (Representation) data;
         
         } else if (data instanceof JadeTree) {
         	return JadeNodeRepresentation.getJadeNodeRepresentation(((JadeTree)data).getRoot());
