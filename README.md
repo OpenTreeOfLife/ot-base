@@ -6,7 +6,13 @@ General Java classes for Open Tree of Life development with Neo4j
 Dependencies
 -----
 
-ot-base depends on the jade repo at: https://github.com/FePhyFoFum/jade. You must install jade as a maven dependency, which is very simple. See the readme file for the jade repo for instructions.
+ot-base depends on the jade repo at: https://github.com/FePhyFoFum/jade. You must install jade as a maven dependency, which is straightforward. Navigate to where you would like to put the jade repo, and do the following:
+```
+git clone git@github.com:FePhyFoFum/jade.git
+cd jade
+sh mvn_install.sh
+```
+Failing that, see the readme file for the [jade repo](https://github.com/FePhyFoFum/jade) for instructions.
 
 Install
 -----
