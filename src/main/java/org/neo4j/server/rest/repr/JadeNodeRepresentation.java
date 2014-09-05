@@ -37,8 +37,6 @@ public class JadeNodeRepresentation extends MappingRepresentation {
     protected void serialize(MappingSerializer serializer) {
 
     }
-
-    // TODO: put properties into the JadeNodeProperty enum
     
     public static MappingRepresentation getJadeNodeRepresentation(final JadeNode jadeNode) {
 
