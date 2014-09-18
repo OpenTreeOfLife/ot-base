@@ -8,7 +8,8 @@ public class GeneralUtils {
     public static final int MEDIUM_NAME_LENGTH = 14;
     public static final int LONG_NAME_LENGTH = 19;
 
-    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
+//    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
+    public static final String offendingChars = "[^A-Za-z0-9_\\-]+";
     public static final char QUOTE = '"';
     public static final char[] OFFENDING_JSON_CHARS = {QUOTE};
     
