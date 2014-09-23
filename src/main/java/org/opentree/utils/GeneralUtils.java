@@ -8,12 +8,10 @@ public class GeneralUtils {
     public static final int MEDIUM_NAME_LENGTH = 14;
     public static final int LONG_NAME_LENGTH = 19;
 
-    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
-    public static final String newickIllegal = ".*[\\Q:;/[]{}(),\\E]+.*";
-//    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
-    public static final String offendingChars = "[^A-Za-z0-9_\\-]+";
+    public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q:;/[]{}(),\\E]+.*";
+    public static final String NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS = "[^A-Za-z0-9_\\-]+";
     public static final char QUOTE = '"';
-    public static final char[] OFFENDING_JSON_CHARS = {QUOTE};
+    public static final char[] JSON_ILLEGAL_CHARS = {QUOTE};
     
     public static int sum_ints(List<Integer> list){
 		if(list==null || list.size()<1)
@@ -99,8 +97,8 @@ public class GeneralUtils {
 	 * @param dirtyName
 	 * @return cleaned name
 	 */
-	public static String cleanName(String dirtyName) {
-	    String cleanName = dirtyName.replaceAll(offendingChars, "_");	    
+	public static String scrubName(String dirtyName) {
+	    String cleanName = dirtyName.replaceAll(NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS, "_");	    
 	    return cleanName;
 	}
 	
@@ -129,7 +127,7 @@ public class GeneralUtils {
 			needQuotes = true;
 		}
 		// if offending characters are present, quotes are needed
-		if (newickName.matches(newickIllegal)) {
+		if (newickName.matches(NEWICK_ILLEGAL_CHARS)) {
 			needQuotes = true;
 		}
 		if (needQuotes) {
