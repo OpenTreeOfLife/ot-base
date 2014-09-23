@@ -9,6 +9,7 @@ public class GeneralUtils {
     public static final int LONG_NAME_LENGTH = 19;
 
     public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
+    public static final String newickIllegal = ".*[\\Q:;/[]{}(),\\E]+.*";
     public static final char QUOTE = '"';
     public static final char[] OFFENDING_JSON_CHARS = {QUOTE};
     
@@ -87,4 +88,40 @@ public class GeneralUtils {
 	    String cleanName = dirtyName.replaceAll(offendingChars, "_");	    
 	    return cleanName;
 	}
+	
+	/**
+	 * Make sure name conforms to valid newick usage (http://evolution.genetics.washington.edu/phylip/newick_doc.html).
+	 * 
+	 * Replaces single quotes in `origName` with "''" and puts a pair of single quotes around the entire string.
+	 * Puts quotes around name if any illegal characters are present.
+	 * 
+	 * @param origName
+	 * @return newickName
+	 */
+	public static String newickName (String origName) {
+		Boolean needQuotes = false;
+		String newickName = origName;
+		
+		// replace all spaces with underscore
+		newickName = newickName.replaceAll(" ", "_");
+		
+		// replace ':' with '_'. a hack for working with older versions of dendroscope e.g. 2.7.4
+		newickName = newickName.replaceAll(":", "_");
+		
+		// newick standard way of dealing with single quotes in taxon names
+		if (newickName.contains("'")) {
+			newickName = newickName.replaceAll("'", "''");
+			needQuotes = true;
+		}
+		// if offending characters are present, quotes are needed
+		if (newickName.matches(newickIllegal)) {
+			needQuotes = true;
+		}
+		if (needQuotes) {
+			newickName = "'" + newickName + "'";
+		}
+		
+		return newickName;
+	}
+
 }
