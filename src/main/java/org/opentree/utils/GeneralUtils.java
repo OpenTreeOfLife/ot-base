@@ -8,6 +8,8 @@ public class GeneralUtils {
     public static final int MEDIUM_NAME_LENGTH = 14;
     public static final int LONG_NAME_LENGTH = 19;
 
+    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
+    public static final String newickIllegal = ".*[\\Q:;/[]{}(),\\E]+.*";
 //    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
     public static final String offendingChars = "[^A-Za-z0-9_\\-]+";
     public static final char QUOTE = '"';
@@ -60,6 +62,19 @@ public class GeneralUtils {
     	return arr;
     }
 
+	/**
+	 * A function for converting string arrays to HashSets of strings, provided as a convenience for preparing string arrays for TNRS.
+	 * @param input strings
+	 * @return a set of Strings containing the input
+	 */
+	public static HashSet<String> stringArrayToHashset(String[] strings) {
+	    HashSet<String> stringSet = new HashSet<String>();
+	    for (int i = 0; i < strings.length; i++) {
+	        stringSet.add(strings[i]);
+	    }
+	    return stringSet;
+	}
+	
     /**
      * Uses default replacement char (a space)
      * @param dirtyString
@@ -88,17 +103,40 @@ public class GeneralUtils {
 	    String cleanName = dirtyName.replaceAll(offendingChars, "_");	    
 	    return cleanName;
 	}
-
+	
 	/**
-	 * A function for converting string arrays to HashSets of strings, provided as a convenience for preparing string arrays for TNRS.
-	 * @param input strings
-	 * @return a set of Strings containing the input
+	 * Make sure name conforms to valid newick usage (http://evolution.genetics.washington.edu/phylip/newick_doc.html).
+	 * 
+	 * Replaces single quotes in `origName` with "''" and puts a pair of single quotes around the entire string.
+	 * Puts quotes around name if any illegal characters are present.
+	 * 
+	 * @param origName
+	 * @return newickName
 	 */
-	public static HashSet<String> stringArrayToHashset(String[] strings) {
-	    HashSet<String> stringSet = new HashSet<String>();
-	    for (int i = 0; i < strings.length; i++) {
-	        stringSet.add(strings[i]);
-	    }
-	    return stringSet;
+	public static String newickName (String origName) {
+		Boolean needQuotes = false;
+		String newickName = origName;
+		
+		// replace all spaces with underscore
+		newickName = newickName.replaceAll(" ", "_");
+		
+		// replace ':' with '_'. a hack for working with older versions of dendroscope e.g. 2.7.4
+		newickName = newickName.replaceAll(":", "_");
+		
+		// newick standard way of dealing with single quotes in taxon names
+		if (newickName.contains("'")) {
+			newickName = newickName.replaceAll("'", "''");
+			needQuotes = true;
+		}
+		// if offending characters are present, quotes are needed
+		if (newickName.matches(newickIllegal)) {
+			needQuotes = true;
+		}
+		if (needQuotes) {
+			newickName = "'" + newickName + "'";
+		}
+		
+		return newickName;
 	}
+
 }
