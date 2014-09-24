@@ -13,6 +13,7 @@ public class GeneralUtils {
 
     public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q:;/[]{}(),\\E]+.*";
     public static final String NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS = "[^A-Za-z0-9_\\-]+";
+    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
     public static final char QUOTE = '"';
     public static final char[] JSON_ILLEGAL_CHARS = {QUOTE};
     
@@ -101,7 +102,7 @@ public class GeneralUtils {
 	 * @return cleaned name
 	 */
 	public static String scrubName(String dirtyName) {
-	    String cleanName = dirtyName.replaceAll(NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS, "_");	    
+	    String cleanName = dirtyName.replaceAll(offendingChars, "_");	    
 	    return cleanName;
 	}
 	
