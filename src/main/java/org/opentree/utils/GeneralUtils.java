@@ -1,6 +1,9 @@
 package org.opentree.utils;
 
+import java.io.Reader;
 import java.util.*;
+
+import org.opentree.exceptions.DataFormatException;
 
 public class GeneralUtils {
 
@@ -8,10 +11,11 @@ public class GeneralUtils {
     public static final int MEDIUM_NAME_LENGTH = 14;
     public static final int LONG_NAME_LENGTH = 19;
 
+    public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q:;/[]{}(),\\E]+.*";
+    public static final String NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS = "[^A-Za-z0-9_\\-]+";
     public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
-    public static final String newickIllegal = ".*[\\Q:;/[]{}(),\\E]+.*";
     public static final char QUOTE = '"';
-    public static final char[] OFFENDING_JSON_CHARS = {QUOTE};
+    public static final char[] JSON_ILLEGAL_CHARS = {QUOTE};
     
     public static int sum_ints(List<Integer> list){
 		if(list==null || list.size()<1)
@@ -60,6 +64,19 @@ public class GeneralUtils {
     	return arr;
     }
 
+	/**
+	 * A function for converting string arrays to HashSets of strings, provided as a convenience for preparing string arrays for TNRS.
+	 * @param input strings
+	 * @return a set of Strings containing the input
+	 */
+	public static HashSet<String> stringArrayToHashset(String[] strings) {
+	    HashSet<String> stringSet = new HashSet<String>();
+	    for (int i = 0; i < strings.length; i++) {
+	        stringSet.add(strings[i]);
+	    }
+	    return stringSet;
+	}
+	
     /**
      * Uses default replacement char (a space)
      * @param dirtyString
@@ -84,7 +101,7 @@ public class GeneralUtils {
 	 * @param dirtyName
 	 * @return cleaned name
 	 */
-	public static String cleanName(String dirtyName) {
+	public static String scrubName(String dirtyName) {
 	    String cleanName = dirtyName.replaceAll(offendingChars, "_");	    
 	    return cleanName;
 	}
@@ -114,7 +131,7 @@ public class GeneralUtils {
 			needQuotes = true;
 		}
 		// if offending characters are present, quotes are needed
-		if (newickName.matches(newickIllegal)) {
+		if (newickName.matches(NEWICK_ILLEGAL_CHARS)) {
 			needQuotes = true;
 		}
 		if (needQuotes) {
@@ -123,5 +140,64 @@ public class GeneralUtils {
 		
 		return newickName;
 	}
-
+	
+	/**
+	 Peek at tree flavour, report back, reset reader for subsequent processing
+	 @param r a tree file reader
+	 @return treeFormat a string indicating recognized tree format
+	 */
+	public static String divineTreeFormat (Reader r) throws java.io.IOException, DataFormatException {
+		String treeFormat = "";
+		r.mark(1);
+		char c = (char)r.read();
+		r.reset();
+		if (c == '(') {
+			treeFormat = "newick";
+		} else if (c == '{') {
+			treeFormat = "nexson";
+		} else if (c == '#') {
+			throw new DataFormatException("Appears to be a nexus tree file, which is not currently supported.");
+		} else {
+			throw new DataFormatException("We don't know what format this tree is in.");
+		}
+		return treeFormat;
+	}
+	
+	/** 
+	 * Convert from string:
+	 * PREFIX_STUDYID_TREEID_GITSHA
+	 * to:
+	 * {"study" : "NNN", "tree" : "MMM", "sha":"NANA"}
+	 */
+	public static HashMap<String, Object> reformatSourceID (String source) {
+		
+		HashMap<String, Object> results = new HashMap<String, Object>();
+		
+		// format will be: pg_420_522_a2c48df995ddc9fd208986c3d4225112550c8452
+		String[] res = source.split("_");
+		String studyId = "";
+		String treeId  = "";
+		String gitSha  = "";
+		
+		if (res.length == 4) {
+			studyId = res[0] + "_" + res[1];
+			treeId  = res[2];
+			gitSha  = res[3];
+			
+		} else if (res.length == 3) { // older DBs with no prefix
+			studyId = res[0];
+			treeId  = res[1];
+			gitSha  = res[2];
+		} else if (res.length == 2) { // older DBs with no prefix or git SHA
+			studyId = res[0];
+			treeId  = res[1];
+		} else { // taxonomy has only one element
+			studyId = res[0];
+		}
+		results.put("study_id", studyId);
+		results.put("tree_id", treeId);
+		results.put("git_sha", gitSha);
+		
+		return (results);
+	}
 }
