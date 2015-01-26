@@ -11,7 +11,8 @@ public class GeneralUtils {
     public static final int MEDIUM_NAME_LENGTH = 14;
     public static final int LONG_NAME_LENGTH = 19;
 
-    public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q:;/[]{}(),\\E]+.*";
+    public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q:;[](),\\E]+.*";
+    public static final String NEXUS_ILLEGAL_CHARS = ".*[\\Q:;[](),/\\=*'\"`+-<>~-\\E]+.*";
     public static final String NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS = "[^A-Za-z0-9_\\-]+";
     public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
     public static final char QUOTE = '"';
@@ -109,8 +110,8 @@ public class GeneralUtils {
 	/**
 	 * Make sure name conforms to valid newick usage (http://evolution.genetics.washington.edu/phylip/newick_doc.html).
 	 * 
+	 * Quote string if any illegal characters (NEWICK_ILLEGAL_CHARS) are present.
 	 * Replaces single quotes in `origName` with "''" and puts a pair of single quotes around the entire string.
-	 * Puts quotes around name if any illegal characters are present.
 	 * 
 	 * @param origName
 	 * @return newickName
@@ -118,9 +119,6 @@ public class GeneralUtils {
 	public static String newickName (String origName) {
 		Boolean needQuotes = false;
 		String newickName = origName;
-		
-		// replace all spaces with underscore
-		newickName = newickName.replaceAll(" ", "_");
 		
 		// replace ':' with '_'. a hack for working with older versions of dendroscope e.g. 2.7.4
 		newickName = newickName.replaceAll(":", "_");
@@ -136,9 +134,45 @@ public class GeneralUtils {
 		}
 		if (needQuotes) {
 			newickName = "'" + newickName + "'";
+		} else {
+			// replace all spaces with underscore
+			newickName = newickName.replaceAll(" ", "_");
 		}
 		
 		return newickName;
+	}
+	
+	/**
+	 * Make sure name conforms to valid Nexus usage (http://sysbio.oxfordjournals.org/content/46/4/590.full.pdf).
+	 * 
+	 * Quote string if any illegal characters (NEXUS_ILLEGAL_CHARS) are present.
+	 * Replaces single quotes in `origName` with "''" and puts a pair of single quotes around the entire string.
+	 * Puts quotes around name if any illegal characters are present.
+	 * 
+	 * @param origName
+	 * @return nexusName
+	 */
+	public static String nexusName (String origName) {
+		Boolean needQuotes = false;
+		String nexusName = origName;
+		
+		// Nexus standard way of dealing with single quotes in taxon names
+		if (nexusName.contains("'")) {
+			nexusName = nexusName.replaceAll("'", "''");
+			needQuotes = true;
+		}
+		// if offending characters are present, quotes are needed
+		if (nexusName.matches(NEXUS_ILLEGAL_CHARS)) {
+			needQuotes = true;
+		}
+		if (needQuotes) {
+			nexusName = "'" + nexusName + "'";
+		} else {
+			// replace all spaces with underscore
+			nexusName = nexusName.replaceAll(" ", "_");
+		}
+		
+		return nexusName;
 	}
 	
 	/**
