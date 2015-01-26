@@ -121,7 +121,7 @@ public class GeneralUtils {
 		String newickName = origName;
 		
 		// replace ':' with '_'. a hack for working with older versions of dendroscope e.g. 2.7.4
-		newickName = newickName.replaceAll(":", "_");
+		//newickName = newickName.replaceAll(":", "_");
 		
 		// newick standard way of dealing with single quotes in taxon names
 		if (newickName.contains("'")) {
