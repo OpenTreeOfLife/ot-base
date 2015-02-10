@@ -200,4 +200,10 @@ public class GeneralUtils {
 		
 		return (results);
 	}
+	
+	// For constant formatting across packages
+	public String getTimestamp () {
+		String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+		return timestamp;
+	}
 }
