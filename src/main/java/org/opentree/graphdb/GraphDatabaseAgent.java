@@ -49,11 +49,11 @@ public class GraphDatabaseAgent {
 		// Map<String,String> indexPars = MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "fulltext");
 
 		Map<String, String> indexPars = MapUtil.stringMap(parameters);
-		if (embedded)
+		if (embedded) {
 			index = embeddedGraphDb.index().forNodes(indexName, indexPars);
-		else
+		} else {
 			index = graphDbService.index().forNodes(indexName, indexPars);
-
+		}
 		return index;
 	}
 
@@ -65,11 +65,11 @@ public class GraphDatabaseAgent {
 		// Map<String,String> indexPars = MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "fulltext");
 
 		Map<String, String> indexPars = MapUtil.stringMap(parameters);
-		if (embedded)
+		if (embedded) {
 			index = embeddedGraphDb.index().forRelationships(indexName, indexPars);
-		else
+		} else {
 			index = graphDbService.index().forRelationships(indexName, indexPars);
-
+		}
 		return index;
 	}
 
