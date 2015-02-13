@@ -95,8 +95,8 @@ public class NexsonTree extends NexsonElement {
 	 * Get an iterable over the tip nodes of the JadeTree underlying this NexsonTree element
 	 * @return
 	 */
-	public Iterable<JadeNode> iterateExternalNodes() {
-		return tree.iterateExternalNodes();
+	public Iterable<JadeNode> externalNodes() {
+		return tree.externalNodes();
 	}
 	
 	// ### setters

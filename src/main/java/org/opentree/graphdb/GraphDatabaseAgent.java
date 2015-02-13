@@ -41,13 +41,18 @@ public class GraphDatabaseAgent {
 		embedded = true;
 	}
 
+	/**
+	 * Pass optional index parameters in adjacent pairs as optional string arguments. E.g. <br/><br/>
+	 * "type", "exact", "to_lower_case", "true" <br/>
+	 * IndexManager.PROVIDER, "lucene", "type", "fulltext" <br/>
+	 * @param indexName
+	 * @param parameters
+	 * @return
+	 */
 	public Index<Node> getNodeIndex(String indexName, String... parameters) {
 		Index<Node> index;
 
-		// Example of optional parameters that can be passed
-		// Map<String,String> indexPars = MapUtil.stringMap( "type", "exact", "to_lower_case", "true" );
-		// Map<String,String> indexPars = MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "fulltext");
-
+		// We don't set default parameters here because some methods require different index parameters
 		Map<String, String> indexPars = MapUtil.stringMap(parameters);
 		if (embedded) {
 			index = embeddedGraphDb.index().forNodes(indexName, indexPars);
@@ -57,13 +62,18 @@ public class GraphDatabaseAgent {
 		return index;
 	}
 
+	/**
+	 * Pass optional index parameters in adjacent pairs as optional string arguments. E.g. <br/><br/>
+	 * "type", "exact", "to_lower_case", "true" <br/>
+	 * IndexManager.PROVIDER, "lucene", "type", "fulltext" <br/>
+	 * @param indexName
+	 * @param parameters
+	 * @return
+	 */
 	public Index<Relationship> getRelationshipIndex(String indexName, String... parameters) {
 		Index<Relationship> index;
 
-		// Example of optional parameters that can be passed
-		// Map<String,String> indexPars = MapUtil.stringMap( "type", "exact", "to_lower_case", "true" );
-		// Map<String,String> indexPars = MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "fulltext");
-
+		// We don't set default parameters here because some methods require different index parameters
 		Map<String, String> indexPars = MapUtil.stringMap(parameters);
 		if (embedded) {
 			index = embeddedGraphDb.index().forRelationships(indexName, indexPars);
