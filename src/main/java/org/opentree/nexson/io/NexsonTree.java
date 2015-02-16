@@ -147,9 +147,10 @@ public class NexsonTree extends NexsonElement implements Tree {
 		// PICKUP HERE.
 		
 		
-		JadeNode observedRoot = ingroupNode.getJadeNode();
+		NexsonNode observedRoot = ingroupNode; //.getJadeNode();
+
 		while (observedRoot.getParent() != null) {
-			observedRoot = (JadeNode) observedRoot.getParent();
+			observedRoot = (NexsonNode) observedRoot.getParent();
 		}
 		if (observedRoot.equals(getRoot())) {
 			this.ingroupNode = ingroupNode;
@@ -224,8 +225,8 @@ public class NexsonTree extends NexsonElement implements Tree {
 		// Find the observed root (the node without a parent) so we can assess whether
 		// it matches the specifiedRoot. If the input file is malicious this might loop forever.
 		NexsonNode observedRoot = null;
-		for (NexsonNode jn = arbitraryNode; jn != null; jn = jn.getParent()) {
-			observedRoot = (NexsonNode) jn.getObject(NexsonNode.NEXSON_NODE_JADE_OBJECT_KEY);
+		for (NexsonNode jn = arbitraryNode; jn != null; jn = (NexsonNode) jn.getParent()) {
+			observedRoot = jn;
 		}
 
 		// Validation, assumes nexson edge polarity matches tree edge polarity (it should).
@@ -235,8 +236,15 @@ public class NexsonTree extends NexsonElement implements Tree {
 		}
 		
 		// GraphImporter looks for root as node with no parents, so we set this here. This seems unnecessary...
-		observedRoot.getJadeNode().setParent(null);
+		observedRoot.setParent(null);
 		
-		tree = new JadeTree(observedRoot.getJadeNode());		
+		// TODO: Think we just need to reroot the tree here...
+//		tree = new NexsonTree(observedRoot.getJadeNode());		
+	}
+
+	@Override
+	public int externalNodeCount() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

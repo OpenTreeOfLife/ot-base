@@ -207,4 +207,16 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 			}
 		}
 	}
+
+	@Override
+	public boolean addChild(TreeNode child) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeChild(TreeNode child) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
