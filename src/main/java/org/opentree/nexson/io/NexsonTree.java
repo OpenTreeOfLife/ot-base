@@ -2,6 +2,7 @@ package org.opentree.nexson.io;
 
 import jade.tree.JadeNode;
 import jade.tree.JadeTree;
+import jade.tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,7 +96,7 @@ public class NexsonTree extends NexsonElement {
 	 * Get an iterable over the tip nodes of the JadeTree underlying this NexsonTree element
 	 * @return
 	 */
-	public Iterable<JadeNode> externalNodes() {
+	public Iterable<TreeNode> externalNodes() {
 		return tree.externalNodes();
 	}
 	
@@ -118,7 +119,7 @@ public class NexsonTree extends NexsonElement {
 	public void specifyIngroup(NexsonNode ingroupNode) {
 		JadeNode observedRoot = ingroupNode.getJadeNode();
 		while (observedRoot.getParent() != null) {
-			observedRoot = observedRoot.getParent();
+			observedRoot = (JadeNode) observedRoot.getParent();
 		}
 		if (observedRoot.equals(getRoot())) {
 			this.ingroupNode = ingroupNode;
@@ -192,7 +193,7 @@ public class NexsonTree extends NexsonElement {
 		// Find the observed root (the node without a parent) so we can assess whether
 		// it matches the specifiedRoot. If the input file is malicious this might loop forever.
 		NexsonNode observedRoot = null;
-		for (JadeNode jn = arbitraryJadeNode; jn != null; jn = jn.getParent()) {
+		for (JadeNode jn = arbitraryJadeNode; jn != null; jn = (JadeNode) jn.getParent()) {
 			observedRoot = (NexsonNode) jn.getObject(NexsonNode.NEXSON_NODE_JADE_OBJECT_KEY);
 		}
 

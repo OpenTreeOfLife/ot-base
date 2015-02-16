@@ -17,6 +17,7 @@ package org.opentree.nexson.io;
 
 import jade.tree.JadeNode;
 import jade.tree.JadeTree;
+import jade.tree.TreeNode;
 
 import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
@@ -63,9 +64,9 @@ public class NexsonReader {
 				msgLogger.indentMessageStr(1, "annotation", "Reference", (String)tree.getProperty("ot:studyPublicationReference"));
 				msgLogger.indentMessageStr(1, "representation", "newick", tree.getRoot().getNewick(false));
 				int i = 0;
-				for (JadeNode node : tree.externalNodes()) {
-					Object o = node.getObject("ot:ottolid");
-					msgLogger.indentMessageStr(2, "node", "name", node.getName());
+				for (TreeNode node : tree.externalNodes()) {
+					Object o = ((JadeNode) node).getObject("ot:ottolid");
+					msgLogger.indentMessageStr(2, "node", "name", (String) ((TreeNode) node).getLabel());
 					msgLogger.indentMessageStr(2, "node", "OTT ID", o.toString());
 					msgLogger.indentMessageStr(2, "node", "ID class", o.getClass().toString());
 					if (++i > 10) {
@@ -348,7 +349,7 @@ public class NexsonReader {
 		// Find the root (the node without a parent) so we can return it.
 		// If the input file is malicious this might loop forever.
 		if (root == null) {
-			for (JadeNode jn = arbitraryNode; jn != null; jn = jn.getParent()) {
+			for (JadeNode jn = arbitraryNode; jn != null; jn = (JadeNode) jn.getParent()) {
 				root = jn;
 			}
 		} else { // a pruned tree. GraphImporter looks for root as node with no parents.
