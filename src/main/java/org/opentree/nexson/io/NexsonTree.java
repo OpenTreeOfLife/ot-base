@@ -45,11 +45,20 @@ public class NexsonTree extends NexsonElement implements Tree {
 	public Iterable<TreeNode> internalNodes(NodeOrder order) {
 		return null;
 	}
-
 	
-	
+	@Override
 	public int internalNodeCount() {
 		return 0;
+	}
+	
+	@Override
+	public int externalNodeCount() {
+		return 0;
+	}
+
+	@Override
+	public Iterable<TreeBipartition> bipartitions() {
+		return null;
 	}
 	
 	// end TODO
@@ -240,11 +249,5 @@ public class NexsonTree extends NexsonElement implements Tree {
 		
 		// TODO: Think we just need to reroot the tree here...
 //		tree = new NexsonTree(observedRoot.getJadeNode());		
-	}
-
-	@Override
-	public int externalNodeCount() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }
