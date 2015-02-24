@@ -61,6 +61,11 @@ public class NexsonTree extends NexsonElement implements Tree {
 		return null;
 	}
 	
+	@Override
+	public Iterable<TreeNode> nodes(NodeOrder order) {
+		return null;
+	}
+
 	// end TODO
 	
 	private JadeTree tree = null;
@@ -250,4 +255,6 @@ public class NexsonTree extends NexsonElement implements Tree {
 		// TODO: Think we just need to reroot the tree here...
 //		tree = new NexsonTree(observedRoot.getJadeNode());		
 	}
+
+
 }
