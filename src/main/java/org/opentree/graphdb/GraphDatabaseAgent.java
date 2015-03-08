@@ -10,6 +10,7 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.tooling.GlobalGraphOperations;
 import org.opentree.properties.OTPropertyPredicate;
 
 /**
@@ -88,6 +89,15 @@ public class GraphDatabaseAgent {
 			return embeddedGraphDb.createNode();
 		} else {
 			return graphDbService.createNode();
+		}
+	}
+	
+	public Iterable<Node> getAllNodes() {
+		if (embedded) {
+			return embeddedGraphDb.getAllNodes();
+		} else {
+			return graphDbService.getAllNodes();
+//			return new GlobalGraphOperations(graphDbService).getAllNodes(); //  should be this but would need to change package of GraphDatabaseAgent
 		}
 	}
 
