@@ -238,4 +238,14 @@ public class GeneralUtils {
 		String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
 		return timestamp;
 	}
+
+	public static void print(Object ... stuff) {
+		StringBuilder junk = new StringBuilder();
+		boolean first = true;
+		for (Object s : stuff) {
+			if (first) { first = false; } else { junk.append(" "); }
+			junk.append(s);
+		}
+		System.out.println(junk.toString());
+	}
 }
