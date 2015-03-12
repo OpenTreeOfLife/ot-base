@@ -3,6 +3,10 @@ package org.opentree.utils;
 import java.io.Reader;
 import java.util.*;
 
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.opentree.exceptions.DataFormatException;
 
 public class GeneralUtils {
@@ -247,5 +251,20 @@ public class GeneralUtils {
 			junk.append(s);
 		}
 		System.out.println(junk.toString());
+	}
+	
+	/**
+	 * Return an iterable containing all the relationships of the indicated type(s) whose start node is n and end node is m.
+	 * @param n
+	 * @param m
+	 * @param relTypes
+	 * @return
+	 */
+	public static Iterable<Relationship> getRelationshipsFromTo(Node n, Node m, RelationshipType ... relTypes) {
+		List<Relationship> rels = new ArrayList<Relationship>();
+		for (Relationship r : n.getRelationships(Direction.OUTGOING, relTypes)) {
+			if (r.getEndNode().equals(m)) { rels.add(r); }
+		}
+		return rels;
 	}
 }
