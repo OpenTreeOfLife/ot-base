@@ -255,15 +255,16 @@ public class GeneralUtils {
 	
 	/**
 	 * Return an iterable containing all the relationships of the indicated type(s) whose start node is n and end node is m.
-	 * @param n
 	 * @param m
+	 * @param n
 	 * @param relTypes
 	 * @return
 	 */
-	public static Iterable<Relationship> getRelationshipsFromTo(Node n, Node m, RelationshipType ... relTypes) {
+	public static Iterable<Relationship> getRelationshipsFromTo(Node m, Node n, RelationshipType ... relTypes) {
 		List<Relationship> rels = new ArrayList<Relationship>();
-		for (Relationship r : n.getRelationships(Direction.OUTGOING, relTypes)) {
-			if (r.getEndNode().equals(m)) { rels.add(r); }
+		for (Relationship r : m.getRelationships(Direction.OUTGOING, relTypes)) { // TODO: this is not finding any rels!?
+			print(r.getEndNode(), "=", n,"?");
+			if (r.getEndNode().equals(n)) { rels.add(r); }
 		}
 		return rels;
 	}
