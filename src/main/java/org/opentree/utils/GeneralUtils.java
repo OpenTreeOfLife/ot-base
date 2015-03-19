@@ -263,7 +263,6 @@ public class GeneralUtils {
 	public static Iterable<Relationship> getRelationshipsFromTo(Node m, Node n, RelationshipType ... relTypes) {
 		List<Relationship> rels = new ArrayList<Relationship>();
 		for (Relationship r : m.getRelationships(Direction.OUTGOING, relTypes)) { // TODO: this is not finding any rels!?
-			print(r.getEndNode(), "=", n,"?");
 			if (r.getEndNode().equals(n)) { rels.add(r); }
 		}
 		return rels;
