@@ -105,14 +105,13 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 	
 	// ### getters
 	
-/*	
 	public boolean isTreeRoot() {
 		return isTreeRoot;
-	} */
+	}
 		
-/*	public Double getParentBranchLength() {
+	public Double getParentBranchLength() {
 		return branchLength;
-	} */
+	}
 	
 	@Override
 	public boolean isTheRoot() {
