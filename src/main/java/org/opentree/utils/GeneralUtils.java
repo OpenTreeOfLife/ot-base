@@ -3,6 +3,10 @@ package org.opentree.utils;
 import java.io.Reader;
 import java.util.*;
 
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.opentree.exceptions.DataFormatException;
 
 public class GeneralUtils {
@@ -11,10 +15,10 @@ public class GeneralUtils {
     public static final int MEDIUM_NAME_LENGTH = 14;
     public static final int LONG_NAME_LENGTH = 19;
 
-    public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q_:;[](),\\E]+.*";
-    public static final String NEXUS_ILLEGAL_CHARS = ".*[\\Q_:;[](),/\\=*'\"`+-<>~\\E]+.*";
+    public static final String NEWICK_ILLEGAL_CHARS = ".*[\\Q:;[](),\\E]+.*";
+    public static final String NEXUS_ILLEGAL_CHARS = ".*[\\Q:;[](),/\\=*'\"`+-<>~\\E]+.*";
     public static final String NOT_ALPHANUMERIC_DASH_UNDERSCORE_CHARS = "[^A-Za-z0-9_\\-]+";
-    public static final String offendingChars = "[\\Q\"_~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
+    public static final String offendingChars = "[\\Q\"~`:;/[]{}|<>,.!@#$%^&*()?+=`\\\\\\E\\s]+";
     public static final char QUOTE = '"';
     public static final char[] JSON_ILLEGAL_CHARS = {QUOTE};
     
@@ -237,5 +241,30 @@ public class GeneralUtils {
 	public static String getTimestamp () {
 		String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
 		return timestamp;
+	}
+
+	public static void print(Object ... stuff) {
+		StringBuilder junk = new StringBuilder();
+		boolean first = true;
+		for (Object s : stuff) {
+			if (first) { first = false; } else { junk.append(" "); }
+			junk.append(s);
+		}
+		System.out.println(junk.toString());
+	}
+	
+	/**
+	 * Return an iterable containing all the relationships of the indicated type(s) whose start node is n and end node is m.
+	 * @param m
+	 * @param n
+	 * @param relTypes
+	 * @return
+	 */
+	public static Iterable<Relationship> getRelationshipsFromTo(Node m, Node n, RelationshipType ... relTypes) {
+		List<Relationship> rels = new ArrayList<Relationship>();
+		for (Relationship r : m.getRelationships(Direction.OUTGOING, relTypes)) { // TODO: this is not finding any rels!?
+			if (r.getEndNode().equals(n)) { rels.add(r); }
+		}
+		return rels;
 	}
 }

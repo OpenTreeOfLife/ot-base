@@ -1,17 +1,85 @@
 package org.opentree.nexson.io;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jade.tree.JadeNode;
+import jade.tree.TreeNode;
 
 import org.json.simple.JSONObject;
 import org.opentree.properties.OTVocabularyPredicate;
 
-public class NexsonNode extends NexsonElement {
+public class NexsonNode extends NexsonElement implements TreeNode {
 
+	// TODO new methods
+	
+	@Override
+	public boolean isExternal() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInternal() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Iterable<TreeNode> getDescendantLeaves() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getChildCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public TreeNode getChild(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TreeNode> getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNewick(boolean showBranchLengths) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void addChild(NexsonNode child) {
+		this.children.add(child);
+	}
+	
+	@Override
+	public TreeNode getParent() {
+		return parent;
+	}
+	
+	public void setParent(NexsonNode parent) {
+		this.parent = parent;
+	}
+
+
+	private List<NexsonNode> children = new ArrayList<NexsonNode>();
+	
+	// end TODO
+	
+	
 	private boolean isIngroupRoot = false;
 	private boolean isTreeRoot = false;
 	private Double branchLength = null;
-	private JadeNode jadeNode = new JadeNode();
+//	private JadeNode jadeNode = new JadeNode();
 	private NexsonTree parentTree = null;
+	private NexsonNode parent = null;
 	private NexsonOTU otu = null;
 	
 	public static final String NEXSON_NODE_JADE_OBJECT_KEY = "nexson_node";
@@ -26,7 +94,6 @@ public class NexsonNode extends NexsonElement {
 	 * @param parentTree
 	 */
 	public NexsonNode(JSONObject nexson, NexsonTree parentTree) {
-		initialize();
 		setParentTree(parentTree);
 		parseNexson(nexson);
 	}
@@ -34,31 +101,50 @@ public class NexsonNode extends NexsonElement {
 	/**
 	 * Create an empty NexsonNode object.
 	 */
-	public NexsonNode() { 
-		initialize();
-	}
+	public NexsonNode() { }
 	
 	// ### getters
 	
-	public boolean isIngroupRoot() {
-		return isIngroupRoot;
-	}
-
 	public boolean isTreeRoot() {
 		return isTreeRoot;
 	}
-	
-	public JadeNode getJadeNode() {
-		return jadeNode;
-	}
-	
+		
 	public Double getParentBranchLength() {
 		return branchLength;
 	}
 	
+	@Override
+	public boolean isTheRoot() {
+		return isTreeRoot;
+	}
+
+	@Override
+	public double getBL() {
+		return branchLength;
+	}
+	
+	@Override
+	public Object getLabel() {
+		Object label = null;
+		if (otu != null) {
+			label = otu.getProperty(OTVocabularyPredicate.OT_OTT_ID.propertyName());
+		}
+		return label;
+	}
+
 	public NexsonOTU getOTU() {
 		return otu;
 	}
+
+	public boolean isIngroupRoot() {
+		return isIngroupRoot;
+	}
+	
+	/*
+	public JadeNode getJadeNode() {
+		return jadeNode;
+	} */
+
 	
 	// ### setters
 	
@@ -70,9 +156,10 @@ public class NexsonNode extends NexsonElement {
 		this.isTreeRoot = isTreeRoot;
 	}
 
+	/*
 	public void assignJadeNode(JadeNode jadeNode) {
 		this.jadeNode = jadeNode;
-	}
+	} */
 	
 	public void setParentTree(NexsonTree parentTree) {
 		this.parentTree = parentTree;
@@ -119,11 +206,16 @@ public class NexsonNode extends NexsonElement {
 			}
 		}
 	}
-	
-	/**
-	 * Logic called during construction
-	 */
-	private void initialize() {
-		jadeNode.assocObject(NEXSON_NODE_JADE_OBJECT_KEY, this);
+
+	@Override
+	public boolean addChild(TreeNode child) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeChild(TreeNode child) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

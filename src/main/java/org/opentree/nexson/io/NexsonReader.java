@@ -17,6 +17,7 @@ package org.opentree.nexson.io;
 
 import jade.tree.JadeNode;
 import jade.tree.JadeTree;
+import jade.tree.TreeNode;
 
 import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
@@ -63,9 +64,9 @@ public class NexsonReader {
 				msgLogger.indentMessageStr(1, "annotation", "Reference", (String)tree.getProperty("ot:studyPublicationReference"));
 				msgLogger.indentMessageStr(1, "representation", "newick", tree.getRoot().getNewick(false));
 				int i = 0;
-				for (JadeNode node : tree.iterateExternalNodes()) {
-					Object o = node.getObject("ot:ottolid");
-					msgLogger.indentMessageStr(2, "node", "name", node.getName());
+				for (TreeNode node : tree.externalNodes()) {
+					Object o = ((JadeNode) node).getObject("ot:ottolid");
+					msgLogger.indentMessageStr(2, "node", "name", (String) ((TreeNode) node).getLabel());
 					msgLogger.indentMessageStr(2, "node", "OTT ID", o.toString());
 					msgLogger.indentMessageStr(2, "node", "ID class", o.getClass().toString());
 					if (++i > 10) {
@@ -100,7 +101,7 @@ public class NexsonReader {
 	 *  
 	 */
 	@Deprecated
-	public static NexsonSource readNexson(Reader r, Boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
+	public static NexsonSource readNexson(Reader r, boolean verbose, MessageLogger msgLogger) throws java.io.IOException {
 
 		NexsonSource source = null;
 		source = readNexson(r, null, verbose, msgLogger);
@@ -348,7 +349,7 @@ public class NexsonReader {
 		// Find the root (the node without a parent) so we can return it.
 		// If the input file is malicious this might loop forever.
 		if (root == null) {
-			for (JadeNode jn = arbitraryNode; jn != null; jn = jn.getParent()) {
+			for (JadeNode jn = arbitraryNode; jn != null; jn = (JadeNode) jn.getParent()) {
 				root = jn;
 			}
 		} else { // a pruned tree. GraphImporter looks for root as node with no parents.
@@ -357,15 +358,16 @@ public class NexsonReader {
 		
 		JadeTree tree = new JadeTree(root);
 		
+		/*
 		int nc = tree.getExternalNodeCount();
-		msgLogger.indentMessageInt(1, "Ingested tree", "number of external nodes", nc);
+		msgLogger.indentMessageInt(1, "Ingested tree", "number of external nodes", nc); */
 		
 		// Copy TREE-level metadata into the JadeTree
 		if (treeMetaList != null) {
 			associateMetadata(tree, extractMetadataMap(treeMetaList, verbose ? msgLogger : null));
 		}
 //		tree.assocObject("phylografter_id", treeID);
-		tree.assocObject("nexson_id", treeID);
+		tree.setProperty("nexson_id", treeID);
 		return tree;
 	}
 	
@@ -391,7 +393,7 @@ public class NexsonReader {
 	
 	private static void associateMetadata(JadeTree tree, Map<String, Object> metaMap) {
 		for (Entry<String, Object> property : metaMap.entrySet()) {
-			tree.assocObject(property.getKey(), property.getValue());
+			tree.setProperty(property.getKey(), property.getValue());
 		}
 	}
 	
@@ -414,7 +416,7 @@ public class NexsonReader {
 					if (value == null) {
 						throw new RuntimeException("missing value for " + propname);
 					}
-					tree.assocObject(propname, value);
+					tree.setProperty(propname, value);
 					if (msgLogger != null) {
 						msgLogger.indentMessageStr(1, "property added", propname, value.toString());
 					}
@@ -423,7 +425,7 @@ public class NexsonReader {
 					if (value == null) {
 						throw new RuntimeException("missing value for " + propname);
 					}
-					tree.assocObject(propname, value);
+					tree.setProperty(propname, value);
 					if (msgLogger != null) {
 						msgLogger.indentMessageStr(1, "property added", propname, value.toString());
 					}

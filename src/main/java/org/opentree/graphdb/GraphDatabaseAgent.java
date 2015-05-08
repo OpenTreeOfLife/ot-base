@@ -10,6 +10,7 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.tooling.GlobalGraphOperations;
 import org.opentree.properties.OTPropertyPredicate;
 
 /**
@@ -41,35 +42,45 @@ public class GraphDatabaseAgent {
 		embedded = true;
 	}
 
+	/**
+	 * Pass optional index parameters in adjacent pairs as optional string arguments. E.g. <br/><br/>
+	 * "type", "exact", "to_lower_case", "true" <br/>
+	 * IndexManager.PROVIDER, "lucene", "type", "fulltext" <br/>
+	 * @param indexName
+	 * @param parameters
+	 * @return
+	 */
 	public Index<Node> getNodeIndex(String indexName, String... parameters) {
 		Index<Node> index;
 
-		// Example of optional parameters that can be passed
-		// Map<String,String> indexPars = MapUtil.stringMap( "type", "exact", "to_lower_case", "true" );
-		// Map<String,String> indexPars = MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "fulltext");
-
+		// We don't set default parameters here because some methods require different index parameters
 		Map<String, String> indexPars = MapUtil.stringMap(parameters);
-		if (embedded)
+		if (embedded) {
 			index = embeddedGraphDb.index().forNodes(indexName, indexPars);
-		else
+		} else {
 			index = graphDbService.index().forNodes(indexName, indexPars);
-
+		}
 		return index;
 	}
 
+	/**
+	 * Pass optional index parameters in adjacent pairs as optional string arguments. E.g. <br/><br/>
+	 * "type", "exact", "to_lower_case", "true" <br/>
+	 * IndexManager.PROVIDER, "lucene", "type", "fulltext" <br/>
+	 * @param indexName
+	 * @param parameters
+	 * @return
+	 */
 	public Index<Relationship> getRelationshipIndex(String indexName, String... parameters) {
 		Index<Relationship> index;
 
-		// Example of optional parameters that can be passed
-		// Map<String,String> indexPars = MapUtil.stringMap( "type", "exact", "to_lower_case", "true" );
-		// Map<String,String> indexPars = MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "fulltext");
-
+		// We don't set default parameters here because some methods require different index parameters
 		Map<String, String> indexPars = MapUtil.stringMap(parameters);
-		if (embedded)
+		if (embedded) {
 			index = embeddedGraphDb.index().forRelationships(indexName, indexPars);
-		else
+		} else {
 			index = graphDbService.index().forRelationships(indexName, indexPars);
-
+		}
 		return index;
 	}
 
@@ -78,6 +89,15 @@ public class GraphDatabaseAgent {
 			return embeddedGraphDb.createNode();
 		} else {
 			return graphDbService.createNode();
+		}
+	}
+	
+	public Iterable<Node> getAllNodes() {
+		if (embedded) {
+			return embeddedGraphDb.getAllNodes();
+		} else {
+			return graphDbService.getAllNodes();
+//			return new GlobalGraphOperations(graphDbService).getAllNodes(); //  should be this but would need to change package of GraphDatabaseAgent
 		}
 	}
 

@@ -2,6 +2,10 @@ package org.opentree.nexson.io;
 
 import jade.tree.JadeNode;
 import jade.tree.JadeTree;
+import jade.tree.NodeOrder;
+import jade.tree.Tree;
+import jade.tree.TreeBipartition;
+import jade.tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +33,40 @@ import org.opentree.properties.OTVocabularyPredicate;
  * @author cody
  *
  */
-public class NexsonTree extends NexsonElement {
+public class NexsonTree extends NexsonElement implements Tree {
+	
+	// TODO: new methods
+	
+	public TreeBipartition getBipartition(TreeNode node) {
+		return null;
+	}
+	
+	@Override
+	public Iterable<TreeNode> internalNodes(NodeOrder order) {
+		return null;
+	}
+	
+	@Override
+	public int internalNodeCount() {
+		return 0;
+	}
+	
+	@Override
+	public int externalNodeCount() {
+		return 0;
+	}
+
+	@Override
+	public Iterable<TreeBipartition> bipartitions() {
+		return null;
+	}
+	
+	@Override
+	public Iterable<TreeNode> nodes(NodeOrder order) {
+		return null;
+	}
+
+	// end TODO
 	
 	private JadeTree tree = null;
 	private NexsonSource parentStudy = null;
@@ -92,12 +129,14 @@ public class NexsonTree extends NexsonElement {
 	}
 	
 	/**
-	 * Get an iterable over the tip nodes of the JadeTree underlying this NexsonTree element
+	 * Get an iterable over the tip nodes of the NexsonTree element
 	 * @return
 	 */
-	public Iterable<JadeNode> iterateExternalNodes() {
-		return tree.iterateExternalNodes();
+	@Override
+	public Iterable<TreeNode> externalNodes() {
+		return tree.externalNodes(); // should use nexsontree instead of jadetree
 	}
+	
 	
 	// ### setters
 	
@@ -116,9 +155,16 @@ public class NexsonTree extends NexsonElement {
 	 * @param ingroupNode
 	 */
 	public void specifyIngroup(NexsonNode ingroupNode) {
-		JadeNode observedRoot = ingroupNode.getJadeNode();
+		
+		
+		// TODO: making this consistent with Tree and TreeNode, and switching away from jadenode-connected implementation.
+		// PICKUP HERE.
+		
+		
+		NexsonNode observedRoot = ingroupNode; //.getJadeNode();
+
 		while (observedRoot.getParent() != null) {
-			observedRoot = observedRoot.getParent();
+			observedRoot = (NexsonNode) observedRoot.getParent();
 		}
 		if (observedRoot.equals(getRoot())) {
 			this.ingroupNode = ingroupNode;
@@ -138,15 +184,16 @@ public class NexsonTree extends NexsonElement {
 		processMetadata(nexson);
 		
 		// arbitraryNode is used a starting point for finding the root later on (if not specified), see below
-		JadeNode arbitraryJadeNode = null;
-
+		NexsonNode arbitraryNode = null;
+//		JadeNode arbitraryJadeNode = null;
+		
 		// if we have a specified root node, record it, we will use this to validate the nexson structure
 		NexsonNode specifiedRoot = null;
 		
 		// nodes and edges will be used to build the tree
 		JSONArray nexsonNodeArr = (JSONArray) nexson.get("node");
 		JSONArray edgeList = (JSONArray) nexson.get("edge");
-		Map<String, JadeNode> jadeNodesByNexsonNodeId = new HashMap<String, JadeNode>();
+		Map<String, NexsonNode> nodeForId = new HashMap<String, NexsonNode>();
 		
 		// For each node as specified in the Nexson file
 		// e.g. {"@otu": "otu221", "@id": "node692"}
@@ -154,36 +201,36 @@ public class NexsonTree extends NexsonElement {
 
 			// create a nexson node from the incoming JSON source and squirrel it away its associated JadeNode
 			NexsonNode nexsonNode = new NexsonNode((JSONObject)node, this);
-			jadeNodesByNexsonNodeId.put(nexsonNode.getId(), nexsonNode.getJadeNode());
+			nodeForId.put(nexsonNode.getId(), nexsonNode);
 			
-			arbitraryJadeNode = nexsonNode.getJadeNode();
+			arbitraryNode = nexsonNode; //.getJadeNode();
 			
-			if (nexsonNode.isTreeRoot()) {
+			if (nexsonNode.isTheRoot()) {
 				specifiedRoot = nexsonNode;
 			}
 		}
 		
-		// Currently, we do not remember NexSON edges. We record them as links between the JadeNodes associated with the NexsonNode objects
+		// Currently, we do not remember NexSON edges. We record them as links between NexsonNodes
 		
-		// For each specified edge, hook up the two corresponding JadeNodes
+		// For each specified edge, hook up the two corresponding nodes
 		for (Object edge : edgeList) {
 			JSONObject j = (JSONObject)edge;
 			// {"@source": "node830", "@target": "node834", "@length": 0.000241603, "@id": "edge834"}
 
 			// source is parent, target is child
-			JadeNode parent = jadeNodesByNexsonNodeId.get(j.get("@source"));
+			NexsonNode parent = nodeForId.get(j.get("@source"));
 			if (parent == null) {
 				throw new NexsonParseException("Edge with source property " + (String)j.get("@source") + " not corresponding to any known nodes");
 			}
 			
-			JadeNode child = jadeNodesByNexsonNodeId.get(j.get("@target"));
+			NexsonNode child = nodeForId.get(j.get("@target"));
 			if (child == null) {
 				throw new NexsonParseException("Edge with target property " + (String)j.get("@target") + " not corresponding to any known nodes");
 			}
 			
 			Number length = (Number) j.get("@length");
 			if (length != null) {
-				((NexsonNode) child.getObject(NexsonNode.NEXSON_NODE_JADE_OBJECT_KEY)).setParentBranchLength(length.doubleValue());
+				child.setParentBranchLength(length.doubleValue());
 			}
 			
 			parent.addChild(child);
@@ -192,8 +239,8 @@ public class NexsonTree extends NexsonElement {
 		// Find the observed root (the node without a parent) so we can assess whether
 		// it matches the specifiedRoot. If the input file is malicious this might loop forever.
 		NexsonNode observedRoot = null;
-		for (JadeNode jn = arbitraryJadeNode; jn != null; jn = jn.getParent()) {
-			observedRoot = (NexsonNode) jn.getObject(NexsonNode.NEXSON_NODE_JADE_OBJECT_KEY);
+		for (NexsonNode jn = arbitraryNode; jn != null; jn = (NexsonNode) jn.getParent()) {
+			observedRoot = jn;
 		}
 
 		// Validation, assumes nexson edge polarity matches tree edge polarity (it should).
@@ -203,8 +250,11 @@ public class NexsonTree extends NexsonElement {
 		}
 		
 		// GraphImporter looks for root as node with no parents, so we set this here. This seems unnecessary...
-		observedRoot.getJadeNode().setParent(null);
+		observedRoot.setParent(null);
 		
-		tree = new JadeTree(observedRoot.getJadeNode());		
+		// TODO: Think we just need to reroot the tree here...
+//		tree = new NexsonTree(observedRoot.getJadeNode());		
 	}
+
+
 }
