@@ -1,9 +1,11 @@
 package org.opentree.nexson.io;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import jade.tree.JadeNode;
+import jade.tree.NodeOrder;
 import jade.tree.TreeNode;
 
 import org.json.simple.JSONObject;
@@ -11,78 +13,26 @@ import org.opentree.properties.OTVocabularyPredicate;
 
 public class NexsonNode extends NexsonElement implements TreeNode {
 
-	// TODO new methods
+	// TODO incomplete new methods
 	
-	@Override
-	public boolean isExternal() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isInternal() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Iterable<TreeNode> getDescendantLeaves() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getChildCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public TreeNode getChild(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<TreeNode> getChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public String getNewick(boolean showBranchLengths) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public void addChild(NexsonNode child) {
-		this.children.add(child);
-	}
-	
-	@Override
-	public TreeNode getParent() {
-		return parent;
-	}
-	
-	public void setParent(NexsonNode parent) {
-		this.parent = parent;
+		// TODO: should code this up
+		throw new UnsupportedOperationException();
 	}
 
+	// end incomplete new methods
 
 	private List<NexsonNode> children = new ArrayList<NexsonNode>();
-	
-	// end TODO
-	
-	
 	private boolean isIngroupRoot = false;
 	private boolean isTreeRoot = false;
+	private boolean isLeaf = false;
 	private Double branchLength = null;
-//	private JadeNode jadeNode = new JadeNode();
 	private NexsonTree parentTree = null;
 	private NexsonNode parent = null;
 	private NexsonOTU otu = null;
 	
-	public static final String NEXSON_NODE_JADE_OBJECT_KEY = "nexson_node";
+//	public static final String NEXSON_NODE_JADE_OBJECT_KEY = "nexson_node";
 
 	/**
 	 * Create a NexsonNode object using the provided NexSON. Requires a NexsonTree element to be supplied, which will be used to attempt
@@ -103,6 +53,50 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 	 */
 	public NexsonNode() { }
 	
+	@Override
+	public boolean isExternal() {
+		return isLeaf;
+	}
+
+	@Override
+	public boolean isInternal() {
+		return ! isLeaf;
+	}
+
+	@Override
+	public int getChildCount() {
+		return children.size();
+	}
+
+	@Override
+	public TreeNode getChild(int i) {
+		return children.get(i);
+	}
+
+	@Override
+	public List<TreeNode> getChildren() {
+		return (List<TreeNode>) ((List<?>) this.children);
+	}
+
+	@Override
+	public boolean addChild(TreeNode child) {
+		return this.children.add((NexsonNode) child);
+	}
+
+	@Override
+	public boolean removeChild(TreeNode child) {
+		return this.children.remove(child);
+	}
+
+	@Override
+	public TreeNode getParent() {
+		return parent;
+	}
+	
+	public void setParent(NexsonNode parent) {
+		this.parent = parent;
+	}
+
 	// ### getters
 	
 	public boolean isTreeRoot() {
@@ -140,11 +134,6 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 		return isIngroupRoot;
 	}
 	
-	/*
-	public JadeNode getJadeNode() {
-		return jadeNode;
-	} */
-
 	
 	// ### setters
 	
@@ -155,11 +144,6 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 	public void setIsTreeRoot(boolean isTreeRoot) {
 		this.isTreeRoot = isTreeRoot;
 	}
-
-	/*
-	public void assignJadeNode(JadeNode jadeNode) {
-		this.jadeNode = jadeNode;
-	} */
 	
 	public void setParentTree(NexsonTree parentTree) {
 		this.parentTree = parentTree;
@@ -173,7 +157,51 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 		this.otu = otu;
 	}
 
-	// ### other methods
+    // ===== node iterators
+	
+    public Iterable<TreeNode> getDescendantLeaves(NodeOrder order) {
+        LinkedList<TreeNode> leaves = new LinkedList<TreeNode>();
+    	for (TreeNode descendant : getDescendants(order)) {
+    		if (descendant.isExternal()) {
+    			leaves.add(descendant);
+    		}
+    	}
+    	return leaves;
+    }
+    
+    public Iterable<TreeNode> getDescendantLeaves() {
+    	return getDescendantLeaves(NodeOrder.PREORDER);
+    }
+    
+    public Iterable<TreeNode> getDescendants() {
+    	return getDescendants(NodeOrder.PREORDER);
+    }
+    
+    public Iterable<TreeNode> getDescendants(NodeOrder order) {
+        
+        LinkedList<TreeNode> nodes = new LinkedList<TreeNode>();
+        addDescendants((TreeNode) this, nodes, order);
+        return nodes;
+    }
+    
+    private void addDescendants(TreeNode n, List<TreeNode> children, NodeOrder order) {
+
+        if (order == NodeOrder.PREORDER) {
+            for (TreeNode c : n.getChildren()){
+                addDescendants(c, children, order);
+            }
+            children.add(n);
+
+        } else if (order == NodeOrder.POSTORDER) {
+            children.add(n);
+
+            for (TreeNode c : n.getChildren()){
+                addDescendants(c, children, order);
+            }
+        }
+    }
+    
+	// ### other stuff
 	
 	protected void parseNexson(JSONObject nexson) {
 		
@@ -188,6 +216,10 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 		if (getId().equals((String) parentTree.getProperty(OTVocabularyPredicate.OT_SPECIFIED_ROOT.propertyName()))) {
 			setIsTreeRoot(true);
 		}
+		
+		if (hasProperty(OTVocabularyPredicate.OT_IS_LEAF.propertyName())) {
+			isLeaf = true;
+		}
 
 		// attempt to assign OTUs based on the OTU list from the associated parent study.
 		// NOTE: IF THE PARENT STUDY HAS NOT BEEN SET, no attempt will be made to set otus nor to
@@ -199,23 +231,9 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 			if (otuId != null) {				
 				assignOTU(parentTree.getParentStudy().getOTUById(otuId)); // will assign null if the parent study has no OTUs
 
-			} else { // fail case
-				if (hasProperty(OTVocabularyPredicate.OT_IS_LEAF.propertyName())) {
-					throw new NexsonParseException("The node " + getId() + " is identified as a leaf but has not been assigned an OTU.");
-				}
+			} else if (isLeaf) { // fail case
+				throw new NexsonParseException("The node " + getId() + " is identified as a leaf but has not been assigned an OTU.");
 			}
 		}
-	}
-
-	@Override
-	public boolean addChild(TreeNode child) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeChild(TreeNode child) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

@@ -36,6 +36,7 @@ import org.opentree.properties.OTVocabularyPredicate;
 public class NexsonTree extends NexsonElement implements Tree {
 	
 	// TODO: new methods
+	NexsonNode root = null;
 	
 	public TreeBipartition getBipartition(TreeNode node) {
 		return null;
@@ -120,12 +121,12 @@ public class NexsonTree extends NexsonElement implements Tree {
 	 * Return the root node for this tree. If this NexsonTree is empty, throw a NoSuchElementException.
 	 * @return
 	 */
-	public JadeNode getRoot() {
-		if (tree != null) {
-			return tree.getRoot();
-		} else {
+	public NexsonNode getRoot() {
+/*		if (tree == null) {
 			throw new java.util.NoSuchElementException("Attempt to get the root of an empty NexsonTree object.");
 		}
+		return tree.getRoot(); */
+		return root;
 	}
 	
 	/**
@@ -251,6 +252,7 @@ public class NexsonTree extends NexsonElement implements Tree {
 		
 		// GraphImporter looks for root as node with no parents, so we set this here. This seems unnecessary...
 		observedRoot.setParent(null);
+		root = observedRoot;
 		
 		// TODO: Think we just need to reroot the tree here...
 //		tree = new NexsonTree(observedRoot.getJadeNode());		
