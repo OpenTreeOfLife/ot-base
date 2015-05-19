@@ -41,14 +41,14 @@ public class NexsonSource extends NexsonElement {
 	 * Create a NexsonStudy object populated from a JSONObject containing the NexSON to be parsed.
 	 * @param nexson
 	 */
-	public NexsonSource(JSONObject nexson) {
+	public NexsonSource(JSONObject nexson) throws NexsonParseException {
 		parseNexson(nexson);
 	}
 	
 	/**
 	 * Create a NexsonStudy object from a Reader object providing access to the NexSON to be parsed.
 	 */
-	public NexsonSource (Reader reader) {
+	public NexsonSource (Reader reader) throws NexsonParseException {
 		parseNexson((JSONObject) JSONValue.parse(reader));
 	}
 	
@@ -149,7 +149,7 @@ public class NexsonSource extends NexsonElement {
 	 * 
 	 */
 	@Override
-	protected void parseNexson(JSONObject nexson) {
+	protected void parseNexson(JSONObject nexson) throws NexsonParseException {
 		
 		// The XML root element
 		JSONObject studyRootElement = (JSONObject)nexson.get("data");
@@ -208,7 +208,7 @@ public class NexsonSource extends NexsonElement {
 	 * For testing
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NexsonParseException {
 		Reader r = null;
 		try {
 			r = new FileReader(args[0]);

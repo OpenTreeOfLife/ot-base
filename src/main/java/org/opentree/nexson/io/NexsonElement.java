@@ -25,7 +25,7 @@ public abstract class NexsonElement {
 	 * Each NexSON element extending this class should be able to parse incoming NexSON to populate the element itself.
 	 * @param nexson
 	 */
-	protected abstract void parseNexson(JSONObject nexson);
+	protected abstract void parseNexson(JSONObject nexson) throws NexsonParseException;
 	
 	public NexsonElement() { }
 	
@@ -33,6 +33,16 @@ public abstract class NexsonElement {
 	
 	public String getId() {
 		return id;
+	}
+	
+	@Override
+	/**
+	 * WARNING: this will return true for two nexson elements with the same id
+	 * <tt>even when they are from different nexson files</tt>. use with caution!
+	 */
+	public boolean equals(Object that) {
+		// cast might fail, a bit sloppy
+		return ((NexsonElement) that).getId().equals(this.getId());
 	}
 	
 	public void setId(String sourceId) {
@@ -133,7 +143,7 @@ public abstract class NexsonElement {
 	 * 
 	 * @param rootElement
 	 */
-	protected void processMetadata(JSONObject rootElement) {
+	protected void processMetadata(JSONObject rootElement) throws NexsonParseException {
 		
 		List<Object> metadata = getMetadataElementsList(rootElement);
 
@@ -223,7 +233,7 @@ public abstract class NexsonElement {
 	 * TODO: clean this up / combine it with checkDeprecated and getMetadataElementsList
 	 * 
 	 */
-	private void extractMetadata(List<Object> metadata) {
+	private void extractMetadata(List<Object> metadata) throws NexsonParseException {
 		
 		for (Object meta : metadata) {
 			JSONObject j = (JSONObject)meta;

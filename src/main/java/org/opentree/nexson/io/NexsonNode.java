@@ -43,7 +43,7 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 	 * @param nexson
 	 * @param parentTree
 	 */
-	public NexsonNode(JSONObject nexson, NexsonTree parentTree) {
+	public NexsonNode(JSONObject nexson, NexsonTree parentTree) throws NexsonParseException {
 		setParentTree(parentTree);
 		parseNexson(nexson);
 	}
@@ -203,7 +203,7 @@ public class NexsonNode extends NexsonElement implements TreeNode {
     
 	// ### other stuff
 	
-	protected void parseNexson(JSONObject nexson) {
+	protected void parseNexson(JSONObject nexson) throws NexsonParseException {
 		
 		processMetadata(nexson);
 		

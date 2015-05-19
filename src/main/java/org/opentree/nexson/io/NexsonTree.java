@@ -80,7 +80,7 @@ public class NexsonTree extends NexsonElement implements Tree {
 	 * @param nexson
 	 * @param parentStudy
 	 */
-	public NexsonTree(JSONObject nexson, NexsonSource parentStudy)  {
+	public NexsonTree(JSONObject nexson, NexsonSource parentStudy) throws NexsonParseException {
 		setParentStudy(parentStudy);
 		parseNexson(nexson);
 	}
@@ -175,7 +175,7 @@ public class NexsonTree extends NexsonElement implements Tree {
 	}
 	
 	@Override
-	protected void parseNexson(JSONObject nexson) {
+	protected void parseNexson(JSONObject nexson) throws NexsonParseException {
 		
 		/* trees can have their own specific metadata e.g.
 		[
@@ -245,7 +245,7 @@ public class NexsonTree extends NexsonElement implements Tree {
 		}
 
 		// Validation, assumes nexson edge polarity matches tree edge polarity (it should).
-		if (specifiedRoot != null && specifiedRoot != observedRoot) {
+		if (specifiedRoot != null && !specifiedRoot.equals(observedRoot)) {
 			throw new NexsonParseException("The specified root node " + specifiedRoot.getId() +
 					" is different from the observed root of the tree in the NexSON object hierarchy. This is nonsensical.");
 		}

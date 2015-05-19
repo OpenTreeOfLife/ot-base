@@ -1,6 +1,6 @@
 package org.opentree.nexson.io;
 
-public class NexsonParseException extends RuntimeException {
+public class NexsonParseException extends Exception {
 
 	/**
 	 * 

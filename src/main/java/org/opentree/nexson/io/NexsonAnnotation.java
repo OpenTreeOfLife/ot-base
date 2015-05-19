@@ -28,7 +28,7 @@ public class NexsonAnnotation {
 	 * Create a NexsonAnnotation containing information extracted from the provided NexSON.
 	 * @param nexson
 	 */
-	public NexsonAnnotation(JSONObject nexson) {
+	public NexsonAnnotation(JSONObject nexson) throws NexsonParseException {
 		parseNexson(nexson);
 	}
 	
@@ -117,7 +117,7 @@ public class NexsonAnnotation {
 
 	// ### other methods
 	
-	protected void parseNexson(JSONObject nexson) {
+	protected void parseNexson(JSONObject nexson) throws NexsonParseException {
 
 		for (Object keyObj : nexson.keySet()) {
 			
