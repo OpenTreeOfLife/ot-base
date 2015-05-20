@@ -14,7 +14,7 @@ public class NexsonParseException extends Exception {
 	}
 	
 	@Override
-	public String toString() {
+	public String getMessage() {
 		return errorMessage;		
 	}
 
