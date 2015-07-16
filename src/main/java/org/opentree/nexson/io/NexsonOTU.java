@@ -11,7 +11,7 @@ public class NexsonOTU extends NexsonElement {
 	 * Create an OTU object containing information from the provided nexson.
 	 * @param nexson
 	 */
-	public NexsonOTU(JSONObject nexson) {
+	public NexsonOTU(JSONObject nexson) throws NexsonParseException {
 		parseNexson(nexson);
 	}
 	
@@ -33,7 +33,7 @@ public class NexsonOTU extends NexsonElement {
 	}
 	
 	@Override
-	protected void parseNexson(JSONObject nexson) {
+	protected void parseNexson(JSONObject nexson) throws NexsonParseException {
 
 		processMetadata(nexson);
 		
