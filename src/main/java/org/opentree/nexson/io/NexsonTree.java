@@ -249,7 +249,7 @@ public class NexsonTree extends NexsonElement implements Tree {
             NexsonParseException e =
                 new NexsonParseException("The specified root node " + specifiedRoot.getId() +
                                          " is different from the observed root of the tree in the NexSON object hierarchy. This is nonsensical.");
-            if (true)
+            if (false)
                 throw e;
             else {
                 System.err.println(e); // should show study id as well  this.parentStudy
