@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import jade.tree.JadeNode;
 import jade.tree.NodeOrder;
 import jade.tree.TreeNode;
 
@@ -232,7 +231,15 @@ public class NexsonNode extends NexsonElement implements TreeNode {
 				assignOTU(parentTree.getParentStudy().getOTUById(otuId)); // will assign null if the parent study has no OTUs
 
 			} else if (isLeaf) { // fail case
-				throw new NexsonParseException("The node " + getId() + " is identified as a leaf but has not been assigned an OTU.");
+                NexsonParseException e = new NexsonParseException("The node " + getId() + " is identified as a leaf but has not been assigned an OTU.");
+                if (false)
+                    throw e;
+                else {
+                    // See https://github.com/OpenTreeOfLife/peyotl/issues/126
+                    // and https://github.com/OpenTreeOfLife/oti/issues/34  -JAR
+                    System.err.println(e);
+                    assignOTU(null);
+                }
 			}
 		}
 	}
