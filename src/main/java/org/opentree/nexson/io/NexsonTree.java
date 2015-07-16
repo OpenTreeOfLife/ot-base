@@ -253,7 +253,6 @@ public class NexsonTree extends NexsonElement implements Tree {
                 throw e;
             else {
                 System.err.println(e); // should show study id as well  this.parentStudy
-                assignOTU(null);
             }
 		}
 		
