@@ -245,11 +245,11 @@ public class NexsonTree extends NexsonElement implements Tree {
 		}
 
 		// Validation, assumes nexson edge polarity matches tree edge polarity (it should).
-		if (specifiedRoot != null && specifiedRoot != observedRoot) {
+		if (specifiedRoot != null && !specifiedRoot.equals(observedRoot)) {
             NexsonParseException e =
                 new NexsonParseException("The specified root node " + specifiedRoot.getId() +
                                          " is different from the observed root of the tree in the NexSON object hierarchy. This is nonsensical.");
-            if (false)
+            if (true)
                 throw e;
             else {
                 System.err.println(e); // should show study id as well  this.parentStudy
