@@ -209,8 +209,13 @@ public class GeneralUtils {
 		
 		HashMap<String, Object> results = new HashMap<String, Object>();
 		
+		String tempSource = source;
+		if (source.endsWith(".tre")) {
+			tempSource = source.substring(0, source.lastIndexOf('.'));
+		}
+		
 		// format will be: pg_420_522_a2c48df995ddc9fd208986c3d4225112550c8452
-		String[] res = source.split("_");
+		String[] res = tempSource.split("_");
 		String studyId = "";
 		String treeId  = "";
 		String gitSha  = "";
@@ -220,10 +225,9 @@ public class GeneralUtils {
 			treeId  = res[2];
 			gitSha  = res[3];
 			
-		} else if (res.length == 3) { // older DBs with no prefix
-			studyId = res[0];
-			treeId  = res[1];
-			gitSha  = res[2];
+		} else if (res.length == 3) { // ids lacking a git SHA
+			studyId = res[0] + "_" + res[1];
+			treeId  = res[2];
 		} else if (res.length == 2) { // older DBs with no prefix or git SHA
 			studyId = res[0];
 			treeId  = res[1];
